@@ -1,8 +1,10 @@
 # Extensions.Dictionary
 
+[![NuGet](https://img.shields.io/nuget/v/Extensions.Dictionary.svg)](https://www.nuget.org/packages/Extensions.Dictionary)
 [![Build status](https://ci.appveyor.com/api/projects/status/o8eyfg4065t5qii9/branch/master?svg=true)](https://ci.appveyor.com/project/SiberaIndustries/extensions-dictionary/branch/master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SiberaIndustries_Extensions.Dictionary&metric=alert_status)](https://sonarcloud.io/dashboard?id=SiberaIndustries_Extensions.Dictionary)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SiberaIndustries_Extensions.Dictionary&metric=coverage)](https://sonarcloud.io/dashboard?id=SiberaIndustries_Extensions.Dictionary)
 [![CodeFactor](https://www.codefactor.io/repository/github/siberaindustries/extensions.dictionary/badge)](https://www.codefactor.io/repository/github/siberaindustries/extensions.dictionary)
-[![codecov](https://codecov.io/gh/SiberaIndustries/Extensions.Dictionary/branch/master/graph/badge.svg)](https://codecov.io/gh/SiberaIndustries/Extensions.Dictionary)
 
 ## Introduction
 
@@ -81,6 +83,6 @@ public class JsonNetResolver : ISerializerResolver
 }
 ```
 
-## Third party licenses
+## Open Source License Acknowledgements and Third-Party Copyrights
 
 - Icon made by [Freepik](https://www.flaticon.com/authors/freepik)

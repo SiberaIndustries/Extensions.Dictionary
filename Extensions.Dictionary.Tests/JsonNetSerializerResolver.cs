@@ -20,7 +20,7 @@ namespace Extensions.Dictionary.Tests
             return memberInfo.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? memberInfo.Name;
         }
 
-        public object? GetPropertyValue(MemberInfo memberInfo, object? instance)
+        public object GetPropertyValue(MemberInfo memberInfo, object instance)
         {
             var convertertype = memberInfo.GetCustomAttribute<JsonConverterAttribute>();
             if (convertertype != null)
@@ -41,7 +41,7 @@ namespace Extensions.Dictionary.Tests
             };
         }
 
-        public IEnumerable<MemberInfo> GetMemberInfos(Type? type) =>
+        public IEnumerable<MemberInfo> GetMemberInfos(Type type) =>
             type?
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public).Cast<MemberInfo>()
                 .Concat(type.GetFields(BindingFlags.Instance | BindingFlags.Public))

@@ -26,7 +26,7 @@ namespace Extensions.Dictionary.Tests
         {
             var types = new Type[]
             {
-                typeof(Dummy),
+                typeof(DictionaryDummy),
             };
 
             Assert.All(types, x => Assert.False(x.IsSimpleType()));
