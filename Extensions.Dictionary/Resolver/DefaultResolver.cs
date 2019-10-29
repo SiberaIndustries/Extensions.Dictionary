@@ -11,7 +11,7 @@ namespace Extensions.Dictionary.Resolver
         /// <inheritdoc cref="BaseResolver" />
         public override IEnumerable<MemberInfo> GetMemberInfos(Type? type) => type == null
             ? Array.Empty<MemberInfo>()
-            : MemberInfoCache.GetOrCreate(type, (entry) => type
+            : MemberInfoCache.GetOrCreate(type.FullName, (entry) => type
                 .GetProperties(PublicInstanceFlags).Cast<MemberInfo>()
                 .Concat(type.GetFields(PublicInstanceFlags)));
     }
