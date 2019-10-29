@@ -12,9 +12,12 @@ namespace Extensions.Dictionary.Resolver
         private static readonly Type DataMemberAttrType = typeof(DataMemberAttribute);
         private static readonly Type IgnoreDataMemberAttrType = typeof(IgnoreDataMemberAttribute);
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to inspect the ancestors of element or not.
+        /// </summary>
         public bool InspectAncestors { get; set; } = true;
 
-        /// <inheritdoc cref="ISerializerResolver" />
+        /// <inheritdoc cref="BaseResolver" />
         public override string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
             ? throw new ArgumentNullException(nameof(memberInfo))
             : MemberInfoCache.GetOrCreate(memberInfo.Name, (entry) =>
@@ -28,7 +31,7 @@ namespace Extensions.Dictionary.Resolver
                 return memberInfo.Name;
             });
 
-        /// <inheritdoc cref="ISerializerResolver" />
+        /// <inheritdoc cref="BaseResolver" />
         public override IEnumerable<MemberInfo> GetMemberInfos(Type? type) => type == null
             ? Array.Empty<MemberInfo>()
             : MemberInfoCache.GetOrCreate(type, (entry) => type
