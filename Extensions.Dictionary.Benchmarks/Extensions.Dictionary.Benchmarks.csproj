@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup Label="Common">
+
+  <PropertyGroup>
     <ProjectGuid>{083b42dc-dd37-4d4a-aaf4-c6740685c661}</ProjectGuid>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
