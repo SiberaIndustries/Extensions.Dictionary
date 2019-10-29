@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Common">
+    <ProjectGuid>{083b42dc-dd37-4d4a-aaf4-c6740685c603}</ProjectGuid>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>Extensions.Dictionary</PackageId>
+    <Authors>Tobias Sibera</Authors>
+    <Company>Sibera Industries</Company>
+    <Description>A library to convert a dictionary out of a given object or an object out of a dictionary.</Description>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/SiberaIndustries/Extensions.Dictionary</RepositoryUrl>
+    <PackageReleaseNotes>https://github.com/SiberaIndustries/Extensions.Dictionary/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/SiberaIndustries/Extensions.Dictionary</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>Dictionary;Extensions;Converter</PackageTags>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Code Analysis">
+    <Features>IOperation</Features>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\code-analysis.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.66" PrivateAssets="All" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png" Link="icon.png" Visible="false" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>
