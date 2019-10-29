@@ -14,12 +14,10 @@ namespace Extensions.Dictionary.Tests
         public string String03 { get; private set; } = nameof(String03); // Private setter property
 
         [Newtonsoft.Json.JsonProperty(PropertyName = "Custom" + nameof(String04))]
-        [System.Text.Json.Serialization.JsonPropertyName("Custom" + nameof(String04))]
         [DataMember(Name = "Custom" + nameof(String04), EmitDefaultValue = true)]
         public string String04 { get; set; } = nameof(String04); // Renamed property
 
         [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
         [IgnoreDataMember]
         public string String05 { get; set; } = nameof(String05); // Ignored property
 

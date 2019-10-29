@@ -9,7 +9,8 @@ namespace Extensions.Dictionary.Resolver
 {
     public class DataContractResolver : BaseResolver
     {
-        private static readonly Type CustomAttributeType = typeof(DataMemberAttribute);
+        private static readonly Type DataMemberAttrType = typeof(DataMemberAttribute);
+        private static readonly Type IgnoreDataMemberAttrType = typeof(IgnoreDataMemberAttribute);
 
         public bool InspectAncestors { get; set; } = true;
 
@@ -18,13 +19,13 @@ namespace Extensions.Dictionary.Resolver
             ? throw new ArgumentNullException(nameof(memberInfo))
             : MemberInfoCache.GetOrCreate(memberInfo.Name, (entry) =>
             {
-                var attribute = memberInfo.GetCustomAttribute(CustomAttributeType, InspectAncestors);
+                var attribute = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors);
                 if (attribute != null)
                 {
-                    return ((DataMemberAttribute)attribute).Name;
+                    return ((DataMemberAttribute)attribute).Name ?? memberInfo.Name;
                 }
 
-                return base.GetPropertyName(memberInfo);
+                return memberInfo.Name;
             });
 
         /// <inheritdoc cref="ISerializerResolver" />
@@ -33,6 +34,6 @@ namespace Extensions.Dictionary.Resolver
             : MemberInfoCache.GetOrCreate(type, (entry) => type
                 .GetProperties(PublicInstanceFlags).Cast<MemberInfo>()
                 .Concat(type.GetFields(PublicInstanceFlags))
-                .Where(x => x.GetCustomAttribute(CustomAttributeType, InspectAncestors) == null));
+                .Where(x => x.GetCustomAttribute(IgnoreDataMemberAttrType, InspectAncestors) == null));
     }
 }

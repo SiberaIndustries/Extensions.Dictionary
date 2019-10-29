@@ -37,7 +37,6 @@ namespace Extensions.Dictionary.Tests
         [Theory]
         [InlineData(nameof(DefaultResolver))]
         [InlineData(nameof(DataContractResolver))]
-        [InlineData(nameof(TextJsonResolver))]
         public void DisposeResolver_ObjectDisposedException(string resolverName)
         {
             var testType = typeof(DictionaryDummy);
@@ -81,7 +80,6 @@ namespace Extensions.Dictionary.Tests
         [Theory]
         [InlineData(nameof(DataContractResolver))]
         [InlineData(nameof(JsonNetSerializerResolver))]
-        [InlineData(nameof(TextJsonResolver))]
         public void CreateDictionaryAndConvertItBackAndRespectDataContracts_Success(string resolverName)
         {
             var dummy = new DictionaryDummy();
@@ -107,7 +105,6 @@ namespace Extensions.Dictionary.Tests
 
         [Theory]
         [InlineData(nameof(DataContractResolver))]
-        [InlineData(nameof(TextJsonResolver))]
         [InlineData(nameof(JsonNetSerializerResolver))]
         public async Task CreateDictionaryAndConvertItBackAndRespectDataContractsAsync_Success(string resolverName)
         {

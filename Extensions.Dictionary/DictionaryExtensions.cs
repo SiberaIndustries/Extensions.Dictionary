@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Utf8Json;
 
 namespace Extensions.Dictionary
 {
@@ -15,7 +15,7 @@ namespace Extensions.Dictionary
         /// <param name="dictionary">The dictionary to convert.</param>
         /// <returns>The converted object.</returns>
         public static T ToInstance<T>(this IDictionary<string, object?> dictionary) =>
-            JsonSerializer.Deserialize<T>(JsonSerializer.SerializeToUtf8Bytes(dictionary));
+            JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(dictionary));
 
         /// <summary>
         /// Converts a dictionary to the specific .NET type asynchronously.
@@ -27,9 +27,11 @@ namespace Extensions.Dictionary
         public static async Task<T> ToInstanceAsync<T>(this IDictionary<string, object?> dictionary, CancellationToken ct = default)
         {
             using var ms = new MemoryStream();
-            await JsonSerializer.SerializeAsync(ms, dictionary, null, ct).ConfigureAwait(false);
+            ct.ThrowIfCancellationRequested();
+            await JsonSerializer.SerializeAsync(ms, dictionary, null).ConfigureAwait(false);
             ms.Seek(0, SeekOrigin.Begin);
-            return await JsonSerializer.DeserializeAsync<T>(ms, null, ct).ConfigureAwait(false);
+            ct.ThrowIfCancellationRequested();
+            return await JsonSerializer.DeserializeAsync<T>(ms, null).ConfigureAwait(false);
         }
     }
 }

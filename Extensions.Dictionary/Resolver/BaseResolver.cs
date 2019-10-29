@@ -15,15 +15,9 @@ namespace Extensions.Dictionary.Resolver
         protected MemoryCache MemberInfoCache { get; } = new MemoryCache(CacheOptions);
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public virtual string GetPropertyName(MemberInfo memberInfo)
-        {
-            if (memberInfo == null)
-            {
-                throw new ArgumentNullException(nameof(memberInfo));
-            }
-
-            return memberInfo.Name;
-        }
+        public virtual string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
+            ? throw new ArgumentNullException(nameof(memberInfo))
+            : memberInfo.Name;
 
         /// <inheritdoc cref="ISerializerResolver" />
         public virtual object? GetPropertyValue(MemberInfo memberInfo, object? instance)
