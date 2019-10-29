@@ -6,7 +6,7 @@ namespace Extensions.Dictionary
 {
     public static class ObjectExtensions
     {
-        private static readonly DefaultResolver DefaultResolver = new DefaultResolver();
+        private static readonly ISerializerResolver DefaultResolver = new DefaultResolver();
 
         internal static bool IsSimpleType(this object? instance) =>
             instance == null || instance.GetType().IsSimpleType();

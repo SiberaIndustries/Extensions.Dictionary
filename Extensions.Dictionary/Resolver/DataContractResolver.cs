@@ -17,7 +17,9 @@ namespace Extensions.Dictionary.Resolver
                 throw new ArgumentNullException(nameof(memberInfo));
             }
 
-            return memberInfo.GetCustomAttribute<DataMemberAttribute>()?.Name ?? memberInfo.Name;
+            return memberInfo.GetCustomAttribute<DataMemberAttribute>()?.Name
+                ?? memberInfo.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name
+                ?? memberInfo.Name;
         }
 
         /// <inheritdoc cref="ISerializerResolver" />

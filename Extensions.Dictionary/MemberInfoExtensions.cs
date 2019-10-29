@@ -18,8 +18,8 @@ namespace Extensions.Dictionary
             {
                 MemberTypes.Property => ((PropertyInfo)memberInfo).PropertyType.IsSimpleType(),
                 MemberTypes.Field => ((FieldInfo)memberInfo).FieldType.IsSimpleType(),
-                null => true,
-                _ => throw new ArgumentException($"{nameof(memberInfo.MemberType)} {memberInfo.MemberType} not supported")
+                null => throw new ArgumentNullException(nameof(memberInfo)),
+                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.MemberType} not supported")
             };
         }
     }
