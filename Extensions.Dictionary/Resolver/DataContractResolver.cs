@@ -20,7 +20,7 @@ namespace Extensions.Dictionary.Resolver
         /// <inheritdoc cref="BaseResolver" />
         public override string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
             ? throw new ArgumentNullException(nameof(memberInfo))
-            : MemberInfoCache.GetOrCreate(memberInfo.Name, (entry) =>
+            : MemberInfoCache.GetOrCreate(memberInfo.DeclaringType.FullName + '.' + memberInfo.Name, (entry) =>
             {
                 var attribute = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors);
                 if (attribute != null)
@@ -34,7 +34,7 @@ namespace Extensions.Dictionary.Resolver
         /// <inheritdoc cref="BaseResolver" />
         public override IEnumerable<MemberInfo> GetMemberInfos(Type? type) => type == null
             ? Array.Empty<MemberInfo>()
-            : MemberInfoCache.GetOrCreate(type, (entry) => type
+            : MemberInfoCache.GetOrCreate(type.FullName, (entry) => type
                 .GetProperties(PublicInstanceFlags).Cast<MemberInfo>()
                 .Concat(type.GetFields(PublicInstanceFlags))
                 .Where(x => x.GetCustomAttribute(IgnoreDataMemberAttrType, InspectAncestors) == null));
