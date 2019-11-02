@@ -1,44 +1,42 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace Extensions.Dictionary.Resolver
 {
-    public class DataContractResolver : ISerializerResolver
+    public class DataContractResolver : BaseResolver
     {
-        /// <inheritdoc cref="ISerializerResolver" />
-        public string GetPropertyName(MemberInfo memberInfo)
-        {
-            if (memberInfo == null)
+        private static readonly Type DataMemberAttrType = typeof(DataMemberAttribute);
+        private static readonly Type IgnoreDataMemberAttrType = typeof(IgnoreDataMemberAttribute);
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to inspect the ancestors of element or not.
+        /// </summary>
+        public bool InspectAncestors { get; set; } = true;
+
+        /// <inheritdoc cref="BaseResolver" />
+        public override string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
+            ? throw new ArgumentNullException(nameof(memberInfo))
+            : MemberInfoCache.GetOrCreate(memberInfo.DeclaringType.FullName + '.' + memberInfo.Name, (entry) =>
             {
-                throw new ArgumentNullException(nameof(memberInfo));
-            }
+                var attribute = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors);
+                if (attribute != null)
+                {
+                    return ((DataMemberAttribute)attribute).Name ?? memberInfo.Name;
+                }
 
-            return memberInfo.GetCustomAttribute<DataMemberAttribute>()?.Name
-                ?? memberInfo.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name
-                ?? memberInfo.Name;
-        }
+                return memberInfo.Name;
+            });
 
-        /// <inheritdoc cref="ISerializerResolver" />
-        public object? GetPropertyValue(MemberInfo memberInfo, object? instance)
-        {
-            return memberInfo?.MemberType switch
-            {
-                MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(instance),
-                MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(instance),
-                null => throw new ArgumentNullException(nameof(memberInfo)),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.MemberType} not supported")
-            };
-        }
-
-        /// <inheritdoc cref="ISerializerResolver" />
-        public IEnumerable<MemberInfo> GetMemberInfos(Type? type) =>
-            type?
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public).Cast<MemberInfo>()
-                .Concat(type.GetFields(BindingFlags.Instance | BindingFlags.Public))
-                .Where(x => !x.GetCustomAttributes<IgnoreDataMemberAttribute>().Any() && !x.GetCustomAttributes<JsonIgnoreAttribute>().Any()) ?? Array.Empty<Type>();
+        /// <inheritdoc cref="BaseResolver" />
+        public override IEnumerable<MemberInfo> GetMemberInfos(Type? type) => type == null
+            ? Array.Empty<MemberInfo>()
+            : MemberInfoCache.GetOrCreate(type.FullName, (entry) => type
+                .GetProperties(PublicInstanceFlags).Cast<MemberInfo>()
+                .Concat(type.GetFields(PublicInstanceFlags))
+                .Where(x => x.GetCustomAttribute(IgnoreDataMemberAttrType, InspectAncestors) == null));
     }
 }

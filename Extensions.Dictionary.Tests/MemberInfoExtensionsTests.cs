@@ -84,7 +84,7 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(nameof(MemberInfoDummy.Value1), value1PropName);
             Assert.Equal(nameof(MemberInfoDummy.Value2), value2PropName);
-            Assert.Equal("Value33", value3PropName);
+            Assert.Equal(nameof(MemberInfoDummy.Value3), value3PropName);
             Assert.Equal("Value44", value4PropName);
             Assert.Equal(nameof(MemberInfoDummy.SubDummy), subDummyPropName);
         }

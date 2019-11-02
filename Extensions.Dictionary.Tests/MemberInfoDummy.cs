@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace Extensions.Dictionary.Tests
 {
@@ -15,7 +14,7 @@ namespace Extensions.Dictionary.Tests
 
         public string Value2;
 
-        [JsonPropertyName("Value33")]
+        [DataMember]
         public string Value3 { get; set; }
 
         [DataMember(Name = "Value44")]

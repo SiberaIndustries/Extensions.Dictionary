@@ -1,4 +1,4 @@
-﻿using Extensions.Dictionary.Resolver;
+using Extensions.Dictionary.Resolver;
 using System;
 
 namespace Extensions.Dictionary.Tests

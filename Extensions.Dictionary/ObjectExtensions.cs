@@ -19,9 +19,12 @@ namespace Extensions.Dictionary
         /// <param name="serializerResolver">Optional serialzer resolver.</param>
         /// <returns>The converted dictionary.</returns>
         public static IDictionary<string, object?> ToDictionary<T>(this T instance, ISerializerResolver? serializerResolver = null)
-            where T : new()
+            where T : new() =>
+            instance.ToDictionaryInternal(serializerResolver ?? DefaultResolver);
+
+        internal static IDictionary<string, object?> ToDictionaryInternal<T>(this T instance, in ISerializerResolver serializerResolver)
+           where T : new()
         {
-            var resolver = serializerResolver ?? DefaultResolver;
             var resultDictionary = new Dictionary<string, object?>();
 
             // Dictionary
@@ -31,7 +34,7 @@ namespace Extensions.Dictionary
                 {
                     resultDictionary[key.ToString()] = dictionary[key].IsSimpleType()
                         ? dictionary[key]
-                        : dictionary[key].ToDictionary(resolver);
+                        : dictionary[key].ToDictionaryInternal(serializerResolver);
                 }
 
                 return resultDictionary;
@@ -45,20 +48,20 @@ namespace Extensions.Dictionary
                 {
                     resultDictionary[string.Empty + i++] = value.IsSimpleType()
                         ? value
-                        : value.ToDictionary(resolver);
+                        : value.ToDictionaryInternal(serializerResolver);
                 }
 
                 return resultDictionary;
             }
 
             // Everything else
-            var members = resolver.GetMemberInfos(instance?.GetType());
+            var members = serializerResolver.GetMemberInfos(instance?.GetType());
             foreach (var member in members)
             {
-                var value = member.GetValue(instance, resolver);
-                resultDictionary[member.GetName(resolver)] = value.IsSimpleType()
+                var value = member.GetValue(instance, serializerResolver);
+                resultDictionary[member.GetName(serializerResolver)] = value.IsSimpleType()
                     ? value
-                    : value.ToDictionary(resolver);
+                    : value.ToDictionaryInternal(serializerResolver);
             }
 
             return resultDictionary;
