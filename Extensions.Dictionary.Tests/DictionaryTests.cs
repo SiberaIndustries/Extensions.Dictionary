@@ -1,6 +1,7 @@
 using Extensions.Dictionary.Resolver;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
@@ -35,8 +36,11 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>();
+            var result = dictionary.ToInstance<DictionaryDummy>(new[] { new Vector3Converter() });
             Assert.Equal(dummy, result);
+
+            var result2 = dictionary.ToInstance<DictionaryDummy>();
+            Assert.Equal(new Vector3(), result2.Vec3);
         }
 
         [Theory]
@@ -100,8 +104,11 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = await dictionary.ToInstanceAsync<DictionaryDummy>(default);
+            var result = await dictionary.ToInstanceAsync<DictionaryDummy>(new[] { new Vector3Converter() }, default);
             Assert.Equal(dummy, result);
+
+            var result2 = await dictionary.ToInstanceAsync<DictionaryDummy>();
+            Assert.Equal(new Vector3(), result2.Vec3);
         }
 
         [Theory]
@@ -130,8 +137,11 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>();
+            var result = dictionary.ToInstance<DictionaryDummy>(new[] { new Vector3Converter() });
             Assert.Equal(dummy, result);
+
+            var result2 = dictionary.ToInstance<DictionaryDummy>();
+            Assert.Equal(new Vector3(), result2.Vec3);
         }
 
         [Theory]
@@ -160,8 +170,11 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(expected, dictionary, new DictionaryComparer<string, object>());
 
-            var result = await dictionary.ToInstanceAsync<DictionaryDummy>(default);
+            var result = await dictionary.ToInstanceAsync<DictionaryDummy>(new[] { new Vector3Converter() }, default);
             Assert.Equal(dummy, result);
+
+            var result2 = await dictionary.ToInstanceAsync<DictionaryDummy>();
+            Assert.Equal(new Vector3(), result2.Vec3);
         }
     }
 }
