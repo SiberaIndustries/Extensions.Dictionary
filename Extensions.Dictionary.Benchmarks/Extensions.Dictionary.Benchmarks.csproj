@@ -9,6 +9,7 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
