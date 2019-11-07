@@ -6,8 +6,6 @@ namespace Extensions.Dictionary
 {
     public static class ObjectExtensions
     {
-        private static readonly ISerializerResolver DefaultResolver = new DefaultResolver();
-
         internal static bool IsSimpleType(this object? instance) =>
             instance == null || instance.GetType().IsSimpleType();
 
@@ -20,7 +18,7 @@ namespace Extensions.Dictionary
         /// <returns>The converted dictionary.</returns>
         public static IDictionary<string, object?> ToDictionary<T>(this T instance, ISerializerResolver? serializerResolver = null)
             where T : new() =>
-            instance.ToDictionaryInternal(serializerResolver ?? DefaultResolver);
+            instance.ToDictionaryInternal(serializerResolver ?? DefaultResolver.Instance);
 
         internal static IDictionary<string, object?> ToDictionaryInternal<T>(this T instance, in ISerializerResolver serializerResolver)
            where T : new()

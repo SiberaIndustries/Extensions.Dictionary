@@ -10,37 +10,57 @@ namespace Extensions.Dictionary.Tests
 {
     public class DictionaryTests : TestFixture
     {
+        private readonly DictionaryDummy dummy;
+
+        public DictionaryTests()
+        {
+            dummy = new DictionaryDummy
+            {
+                String01 = "A",
+                //String02 = "B",
+                //String03 = "C",
+                String04 = "D",
+                String05 = "E",
+                String06 = "F",
+                String08 = "H",
+                Vec3 = new Vector3(3, 2, 1)
+            };
+
+            dummy.Col1.Add(3);
+            dummy.Dict1.Add("val3", true);
+            dummy.Dict2.Add("val3", 3);
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData(nameof(DefaultResolver))]
         public void CreateDictionaryAndConvertItBack_Success(string resolverName)
         {
-            var dummy = new DictionaryDummy();
             var resolver = GetResolver(resolverName);
             var dictionary = dummy.ToDictionary(resolver);
             var expected = new Dictionary<string, object>
             {
-                { nameof(DictionaryDummy.String01), nameof(DictionaryDummy.String01) },
+                { nameof(DictionaryDummy.String01), "A" },
                 { nameof(DictionaryDummy.String02), nameof(DictionaryDummy.String02) },
                 { nameof(DictionaryDummy.String03), nameof(DictionaryDummy.String03) },
-                { nameof(DictionaryDummy.String04), nameof(DictionaryDummy.String04) },
-                { nameof(DictionaryDummy.String05), nameof(DictionaryDummy.String05) },
-                { nameof(DictionaryDummy.String06), nameof(DictionaryDummy.String06) },
+                { nameof(DictionaryDummy.String04), "D" },
+                { nameof(DictionaryDummy.String05), "E" },
+                { nameof(DictionaryDummy.String06), "F" },
                 // { nameof(Dummy.String07), nameof(Dummy.String07) },
-                { nameof(DictionaryDummy.String08), nameof(DictionaryDummy.String08) },
-                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" } } },
-                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 } } },
-                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 } } },
-                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 1f }, { "Y", 2f }, { "Z", 3f } } },
+                { nameof(DictionaryDummy.String08), "H" },
+                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" }, { "val3", true } } },
+                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 }, { "val3", 3 } } },
+                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
+                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
             };
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>(new[] { new Vector3Converter() });
+            var result = dictionary.ToInstance<DictionaryDummy>(resolver, new[] { new Vector3Converter() });
             Assert.Equal(dummy, result);
 
-            var result2 = dictionary.ToInstance<DictionaryDummy>();
-            Assert.Equal(new Vector3(), result2.Vec3);
+            var result2 = dictionary.ToInstance<DictionaryDummy>(resolver);
+            Assert.Equal(new Vector3(3, 2, 1), result2.Vec3);
         }
 
         [Theory]
@@ -78,28 +98,27 @@ namespace Extensions.Dictionary.Tests
             Assert.Throws<NotSupportedException>(() => resolver.GetPropertyValue(GetType().GetMethods()[0], null));
         }
 
-        [Theory]
+        [Theory(Skip = "Async operation becomes deprecated")]
         [InlineData(null)]
         [InlineData(nameof(DefaultResolver))]
         public async Task CreateDictionaryAndConvertItBackAsync_Success(string resolverName)
         {
-            var dummy = new DictionaryDummy();
             var resolver = GetResolver(resolverName);
             var dictionary = dummy.ToDictionary(resolver);
             var expected = new Dictionary<string, object>
             {
-                { nameof(DictionaryDummy.String01), nameof(DictionaryDummy.String01) },
+                { nameof(DictionaryDummy.String01), "A" },
                 { nameof(DictionaryDummy.String02), nameof(DictionaryDummy.String02) },
                 { nameof(DictionaryDummy.String03), nameof(DictionaryDummy.String03) },
-                { nameof(DictionaryDummy.String04), nameof(DictionaryDummy.String04) },
-                { nameof(DictionaryDummy.String05), nameof(DictionaryDummy.String05) },
-                { nameof(DictionaryDummy.String06), nameof(DictionaryDummy.String06) },
+                { nameof(DictionaryDummy.String04), "D" },
+                { nameof(DictionaryDummy.String05), "E" },
+                { nameof(DictionaryDummy.String06), "F" },
                 // { nameof(Dummy.String07), nameof(Dummy.String07) },
-                { nameof(DictionaryDummy.String08), nameof(DictionaryDummy.String08) },
-                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" } } },
-                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 } } },
-                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 } } },
-                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 1f }, { "Y", 2f }, { "Z", 3f } } },
+                { nameof(DictionaryDummy.String08), "H" },
+                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" }, { "val3", true } } },
+                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 }, { "val3", 3 } } },
+                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
+                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
             };
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
@@ -108,7 +127,7 @@ namespace Extensions.Dictionary.Tests
             Assert.Equal(dummy, result);
 
             var result2 = await dictionary.ToInstanceAsync<DictionaryDummy>();
-            Assert.Equal(new Vector3(), result2.Vec3);
+            Assert.Equal(new Vector3(3, 2, 1), result2.Vec3);
         }
 
         [Theory]
@@ -116,56 +135,62 @@ namespace Extensions.Dictionary.Tests
         [InlineData(nameof(JsonNetSerializerResolver))]
         public void CreateDictionaryAndConvertItBackAndRespectDataContracts_Success(string resolverName)
         {
-            var dummy = new DictionaryDummy();
+            // Set to default, because this is going to be ignored!
+            dummy.String08 = nameof(DictionaryDummy.String08);
+            dummy.String05 = nameof(DictionaryDummy.String05);
+
             var resolver = GetResolver(resolverName);
             var dictionary = dummy.ToDictionary(resolver);
             var expected = new Dictionary<string, object>
             {
-                { nameof(DictionaryDummy.String01), nameof(DictionaryDummy.String01) },
+                { nameof(DictionaryDummy.String01), "A" },
                 { nameof(DictionaryDummy.String02), nameof(DictionaryDummy.String02) },
                 { nameof(DictionaryDummy.String03), nameof(DictionaryDummy.String03) },
-                { "Custom" + nameof(DictionaryDummy.String04), nameof(DictionaryDummy.String04) },
+                { "Custom" + nameof(DictionaryDummy.String04), "D" },
                 // { nameof(Dummy.String05), nameof(Dummy.String05) },
-                { nameof(DictionaryDummy.String06), nameof(DictionaryDummy.String06) },
+                { nameof(DictionaryDummy.String06), "F" },
                 //{ nameof(Dummy.String07), nameof(Dummy.String07) },
-                //{ nameof(Dummy.String08), nameof(Dummy.String08) },
-                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" } } },
-                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 } } },
-                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 } } },
-                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 1f }, { "Y", 2f }, { "Z", 3f } } },
+                // { nameof(Dummy.String08), nameof(Dummy.String08) },
+                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" }, { "val3", true } } },
+                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 }, { "val3", 3 } } },
+                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
+                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
             };
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>(new[] { new Vector3Converter() });
+            var result = dictionary.ToInstance<DictionaryDummy>(resolver, new[] { new Vector3Converter() });
             Assert.Equal(dummy, result);
 
-            var result2 = dictionary.ToInstance<DictionaryDummy>();
-            Assert.Equal(new Vector3(), result2.Vec3);
+            var result2 = dictionary.ToInstance<DictionaryDummy>(resolver);
+            Assert.Equal(new Vector3(3, 2, 1), result2.Vec3);
         }
 
-        [Theory]
+        [Theory(Skip = "Async operation becomes deprecated")]
         [InlineData(nameof(DataContractResolver))]
         [InlineData(nameof(JsonNetSerializerResolver))]
         public async Task CreateDictionaryAndConvertItBackAndRespectDataContractsAsync_Success(string resolverName)
         {
-            var dummy = new DictionaryDummy();
+            // Set to default, because this is going to be ignored!
+            dummy.String08 = nameof(DictionaryDummy.String08);
+            dummy.String05 = nameof(DictionaryDummy.String05);
+
             var resolver = GetResolver(resolverName);
             var dictionary = dummy.ToDictionary(resolver);
             var expected = new Dictionary<string, object>
             {
-                { nameof(DictionaryDummy.String01), nameof(DictionaryDummy.String01) },
+                { nameof(DictionaryDummy.String01), "A" },
                 { nameof(DictionaryDummy.String02), nameof(DictionaryDummy.String02) },
                 { nameof(DictionaryDummy.String03), nameof(DictionaryDummy.String03) },
-                { "Custom" + nameof(DictionaryDummy.String04), nameof(DictionaryDummy.String04) },
+                { "Custom" + nameof(DictionaryDummy.String04), "D" },
                 // { nameof(Dummy.String05), nameof(Dummy.String05) },
-                { nameof(DictionaryDummy.String06), nameof(DictionaryDummy.String06) },
+                { nameof(DictionaryDummy.String06), "F" },
                 //{ nameof(Dummy.String07), nameof(Dummy.String07) },
                 //{ nameof(Dummy.String08), nameof(Dummy.String08) },
-                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" } } },
-                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 } } },
-                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 } } },
-                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 1f }, { "Y", 2f }, { "Z", 3f } } },
+                { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" }, { "val3", true } } },
+                { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 }, { "val3", 3 } } },
+                { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
+                { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
             };
 
             Assert.Equal(expected, dictionary, new DictionaryComparer<string, object>());
@@ -174,7 +199,7 @@ namespace Extensions.Dictionary.Tests
             Assert.Equal(dummy, result);
 
             var result2 = await dictionary.ToInstanceAsync<DictionaryDummy>();
-            Assert.Equal(new Vector3(), result2.Vec3);
+            Assert.Equal(new Vector3(3, 2, 1), result2.Vec3);
         }
     }
 }
