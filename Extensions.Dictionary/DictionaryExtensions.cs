@@ -19,7 +19,7 @@ namespace Extensions.Dictionary
         private static readonly Type EnumerableType = typeof(Enumerable);
         private static readonly MethodInfo EnumerableCast = EnumerableType.GetMethod(nameof(Enumerable.Cast));
         private static readonly MethodInfo EnumerableToList = EnumerableType.GetMethod(nameof(Enumerable.ToList));
-        private static readonly ISet<Type> AllowedEnumarableTypes = new HashSet<Type>(new[] { typeof(IList<>), typeof(IEnumerable<>), typeof(ICollection<>) });
+        private static readonly Type[] AllowedEnumarableTypes = new[] { typeof(IList<>), typeof(IEnumerable<>), typeof(ICollection<>) };
 
         /// <summary>
         /// Converts a dictionary to the specific .NET type.
