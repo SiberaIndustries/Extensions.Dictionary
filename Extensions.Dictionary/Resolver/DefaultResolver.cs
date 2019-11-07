@@ -8,6 +8,8 @@ namespace Extensions.Dictionary.Resolver
 {
     public class DefaultResolver : BaseResolver
     {
+        public static readonly ISerializerResolver Instance = new DefaultResolver();
+
         /// <inheritdoc cref="BaseResolver" />
         public override IEnumerable<MemberInfo> GetMemberInfos(Type? type) => type == null
             ? Array.Empty<MemberInfo>()
