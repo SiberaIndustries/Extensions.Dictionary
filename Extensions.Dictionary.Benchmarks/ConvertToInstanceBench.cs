@@ -24,7 +24,7 @@ namespace Extensions.Dictionary.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var d = (IDictionary<string, object>)dummy;
+            var d = (IDictionary<string, object>)((IDictionary<string, object>)dummy)[nameof(DictionaryDummy.Dict1)];
             for (int i = 1; i < N; i++)
             {
                 d[nameof(N)] = new DictionaryDummy().ToDictionary();
