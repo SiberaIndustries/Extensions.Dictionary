@@ -157,22 +157,5 @@ namespace Extensions.Dictionary
 
             return dictToCast;
         }
-
-        /// <summary>
-        /// Converts a dictionary to the specific .NET type asynchronously.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to convert to.</typeparam>
-        /// <param name="dictionary">The dictionary to convert.</param>
-        /// <param name="converters">Additional custom converter.</param>
-        /// <param name="ct">Cancellation token.</param>
-        /// <returns>The converted object.</returns>
-        [Obsolete("This method will soon be deprecated. Use " + nameof(ToInstance) + " instead.")]
-        public static async Task<T> ToInstanceAsync<T>(this IDictionary<string, object?> dictionary, IEnumerable<JsonConverter>? converters = null, CancellationToken ct = default)
-        {
-            using var ms = new MemoryStream();
-            await JsonSerializer.SerializeAsync(ms, dictionary, null, ct).ConfigureAwait(false);
-            ms.Seek(0, SeekOrigin.Begin);
-            return await JsonSerializer.DeserializeAsync<T>(ms, GetSerializerOptions(converters)).ConfigureAwait(false);
-        }
     }
 }
