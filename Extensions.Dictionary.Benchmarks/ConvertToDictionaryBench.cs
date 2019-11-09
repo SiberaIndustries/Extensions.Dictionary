@@ -4,6 +4,7 @@ using Extensions.Dictionary.Tests;
 
 namespace Extensions.Dictionary.Benchmarks
 {
+    [ShortRunJob]
     [MemoryDiagnoser]
     [RankColumn]
     [BenchmarkCategory(nameof(ObjectExtensions.ToDictionary))]
@@ -14,6 +15,21 @@ namespace Extensions.Dictionary.Benchmarks
         private readonly ISerializerResolver dataContractResolver = new DataContractResolver();
         private readonly ISerializerResolver dataContractResolverIgnoreAncestors = new DataContractResolver { InspectAncestors = false };
         private readonly ISerializerResolver jsonResolver = new JsonNetSerializerResolver();
+
+        [Params(1, 10, 100)]
+        public int N;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            var d = dummy;
+            for (int i = 1; i < N; i++)
+            {
+                var val = new DictionaryDummy();
+                d.Dict1[nameof(N)] = val;
+                d = val;
+            }
+        }
 
         [Benchmark(Baseline = true)]
         public void DefaultResolver() =>

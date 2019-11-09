@@ -1,10 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Extensions.Dictionary.Resolver;
 using Extensions.Dictionary.Tests;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Extensions.Dictionary.Benchmarks
 {
+    [ShortRunJob]
     [MemoryDiagnoser]
     [RankColumn]
     [BenchmarkCategory(nameof(DictionaryExtensions.ToInstance))]
@@ -15,6 +17,20 @@ namespace Extensions.Dictionary.Benchmarks
         private readonly ISerializerResolver dataContractResolver = new DataContractResolver();
         private readonly ISerializerResolver dataContractResolverIgnoreAncestors = new DataContractResolver { InspectAncestors = false };
         private readonly ISerializerResolver jsonResolver = new JsonNetSerializerResolver();
+
+        [Params(1, 10, 100)]
+        public int N;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            var d = (IDictionary<string, object>)dummy;
+            for (int i = 1; i < N; i++)
+            {
+                d[nameof(N)] = new DictionaryDummy().ToDictionary();
+                d = (IDictionary<string, object>)d[nameof(N)];
+            }
+        }
 
         [Benchmark(Baseline = true)]
         public void DefaultResolver() =>
@@ -31,5 +47,9 @@ namespace Extensions.Dictionary.Benchmarks
         [Benchmark]
         public void JsonNetResolver() =>
             dummy.ToInstance<DictionaryDummy>(jsonResolver);
+
+        [Benchmark]
+        public void PureJsonNet() =>
+            JsonConvert.DeserializeObject<DictionaryDummy>(JsonConvert.SerializeObject(dummy));
     }
 }
