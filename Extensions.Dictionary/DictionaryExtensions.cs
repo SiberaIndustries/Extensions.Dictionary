@@ -1,10 +1,11 @@
 ﻿using Extensions.Dictionary.Resolver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -16,9 +17,6 @@ namespace Extensions.Dictionary
     {
         private static readonly Type ObjectType = typeof(object);
         private static readonly Type GenericDictionaryType = typeof(IDictionary<,>);
-        private static readonly Type EnumerableType = typeof(Enumerable);
-        private static readonly MethodInfo EnumerableCast = EnumerableType.GetMethod(nameof(Enumerable.Cast));
-        private static readonly MethodInfo EnumerableToList = EnumerableType.GetMethod(nameof(Enumerable.ToList));
         private static readonly Type[] AllowedEnumarableTypes = new[] { typeof(IList<>), typeof(IEnumerable<>), typeof(ICollection<>) };
 
         /// <summary>
@@ -34,6 +32,7 @@ namespace Extensions.Dictionary
                 ? throw new ArgumentNullException(nameof(dictionary))
                 : (T)ToInstanceInternal(dictionary, typeof(T), serializerResolver ?? DefaultResolver.Instance, GetSerializerOptions(converters));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static object ToInstanceInternal(this IDictionary<string, object?> dictionary, Type type, ISerializerResolver serializerResolver, JsonSerializerOptions? options)
         {
             var instance = Activator.CreateInstance(type);
@@ -41,7 +40,16 @@ namespace Extensions.Dictionary
 
             foreach (var element in dictionary)
             {
-                var memberInfo = memberInfos.SingleOrDefault(x => x.GetName(serializerResolver) == element.Key || x.Name == element.Key);
+                var memberInfo = default(MemberInfo);
+                for (int i = 0; i < memberInfos.Length; i++)
+                {
+                    if (memberInfos[i].GetName(serializerResolver) == element.Key || memberInfos[i].Name == element.Key)
+                    {
+                        memberInfo = memberInfos[i];
+                        break;
+                    }
+                }
+
                 if (memberInfo == null)
                 {
                     // TODO: Think about a 'AllKeysMustMatch' solution
@@ -49,51 +57,35 @@ namespace Extensions.Dictionary
                     continue;
                 }
 
-                object? value = null;
+                var value = element.Value;
                 var memberInfoType = memberInfo.GetMemberType();
-                var valueType = element.Value != null
-                    ? element.Value?.GetType()
-                    : memberInfoType;
-
-                if (memberInfoType.IsGenericType)
+                if (element.Value != null && element.Value.GetType() != memberInfoType)
                 {
-                    var genericTypeDef = memberInfoType.GetGenericTypeDefinition();
-                    var genericArgs = memberInfoType.GetGenericArguments();
+                    var dict = (IDictionary<string, object?>?)element.Value ?? new Dictionary<string, object?>(0);
+                    if (memberInfoType.IsGenericType)
+                    {
+                        var genericTypeDef = memberInfoType.GetGenericTypeDefinition();
+                        var genericArgs = memberInfoType.GetGenericArguments();
 
-                    // Is Dictionary
-                    if (genericTypeDef == GenericDictionaryType)
-                    {
-                        value = genericArgs[1] == ObjectType
-                            ? element.Value
-                            : ToInstanceFallback(element.Value, memberInfoType, options); // TODO: How to avoid this?
+                        if (genericTypeDef == GenericDictionaryType)
+                        {   // Is Dictionary
+                            if (genericArgs[1] != ObjectType)
+                            {
+                                value = dict.ConvertDictionary(memberInfoType);
+                            }
+                        }
+                        else if (IsEnumerableType(genericTypeDef))
+                        {   // IEnumerable
+                            value = dict.Values.ConvertList(memberInfoType);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
                     }
-
-                    // Is Enumerable
-                    if (AllowedEnumarableTypes.Contains(genericTypeDef))
+                    else
                     {
-                        var dict = (IDictionary<string, object>?)element.Value ?? new Dictionary<string, object>(0);
-                        value = dict.Values.ConvertList(memberInfoType);
-                    }
-                }
-                else if (memberInfoType == valueType)
-                {
-                    value = element.Value;
-                }
-                else
-                {
-                    try
-                    {
-                        value = element.Value != null
-                            ? ToInstanceInternal((IDictionary<string, object?>)element.Value, memberInfoType, serializerResolver, options)
-                            : element.Value;
-                    }
-                    catch (InvalidCastException)
-                    {
-                        value = ToInstanceFallback(element.Value, memberInfoType, options); // TODO: How to avoid this?
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        value = ToInstanceFallback(element.Value, memberInfoType, options); // TODO: How to avoid this?
+                        value = ToInstanceInternal(dict, memberInfoType, serializerResolver, options);
                     }
                 }
 
@@ -103,6 +95,21 @@ namespace Extensions.Dictionary
             return instance;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsEnumerableType(Type type)
+        {
+            for (int i = 0; i < AllowedEnumarableTypes.Length; i++)
+            {
+                if (AllowedEnumarableTypes[i] == type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static object ToInstanceFallback(object? value, Type type, JsonSerializerOptions? options = null) =>
             JsonSerializer.Deserialize(JsonSerializer.SerializeToUtf8Bytes(value), type, options);
 
@@ -122,15 +129,33 @@ namespace Extensions.Dictionary
             return null;
         }
 
-        private static object ConvertList(this IEnumerable<object> items, Type type, bool convert = false)
+        private static object ConvertList(this ICollection<object?> items, Type type, bool convert = false)
         {
+            var array = Array.CreateInstance(type.GenericTypeArguments[0], items.Count);
             var containedType = type.GenericTypeArguments[0];
-            var itemsToCast = convert
-                ? items.Select(item => Convert.ChangeType(item, containedType, CultureInfo.InvariantCulture))
-                : items;
 
-            var castedItems = EnumerableCast.MakeGenericMethod(containedType).Invoke(null, new[] { itemsToCast });
-            return EnumerableToList.MakeGenericMethod(containedType).Invoke(null, new[] { castedItems });
+            int i = 0;
+            foreach (var item in items)
+            {
+                var value = convert
+                    ? Convert.ChangeType(item, containedType, CultureInfo.InvariantCulture)
+                    : item;
+                array.SetValue(value, i);
+                i++;
+            }
+
+            return array;
+        }
+
+        private static object ConvertDictionary(this IDictionary<string, object?> dict, Type type)
+        {
+            var dictToCast = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(new[] { type.GenericTypeArguments[0], type.GenericTypeArguments[1] }));
+            foreach (var pair in dict)
+            {
+                dictToCast.Add(pair.Key, pair.Value);
+            }
+
+            return dictToCast;
         }
 
         /// <summary>

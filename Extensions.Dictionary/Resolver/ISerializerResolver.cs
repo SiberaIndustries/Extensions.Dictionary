@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Extensions.Dictionary.Resolver
@@ -29,6 +28,6 @@ namespace Extensions.Dictionary.Resolver
         /// </summary>
         /// <param name="type">The object type.</param>
         /// <returns>The necessary MemberInfo objects.</returns>
-        public IEnumerable<MemberInfo> GetMemberInfos(Type? type);
+        public MemberInfo[] GetMemberInfos(Type? type);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -32,11 +30,8 @@ namespace Extensions.Dictionary.Resolver
             });
 
         /// <inheritdoc cref="BaseResolver" />
-        public override IEnumerable<MemberInfo> GetMemberInfos(Type? type) => type == null
+        public override MemberInfo[] GetMemberInfos(Type? type) => type == null
             ? Array.Empty<MemberInfo>()
-            : MemberInfoCache.GetOrCreate(type.FullName, (entry) => type
-                .GetProperties(PublicInstanceFlags).Cast<MemberInfo>()
-                .Concat(type.GetFields(PublicInstanceFlags))
-                .Where(x => x.GetCustomAttribute(IgnoreDataMemberAttrType, InspectAncestors) == null));
+            : MemberInfoCache.GetOrCreate(type.FullName, (entry) => type.GetPropertiesAndFieldsFiltered(IgnoreDataMemberAttrType, InspectAncestors));
     }
 }

@@ -1,14 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Extensions.Dictionary.Resolver
 {
     public abstract class BaseResolver : ISerializerResolver, IDisposable
     {
-        protected const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
         private static readonly IOptions<MemoryCacheOptions> CacheOptions = Options.Create(new MemoryCacheOptions());
         private bool disposed;
 
@@ -32,7 +30,7 @@ namespace Extensions.Dictionary.Resolver
         }
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public abstract IEnumerable<MemberInfo> GetMemberInfos(Type? type);
+        public abstract MemberInfo[] GetMemberInfos(Type? type);
 
         /// <inheritdoc cref="IDisposable" />
         public void Dispose()

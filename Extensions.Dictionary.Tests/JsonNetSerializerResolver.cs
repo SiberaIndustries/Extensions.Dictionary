@@ -1,7 +1,6 @@
 ﻿using Extensions.Dictionary.Resolver;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,10 +40,10 @@ namespace Extensions.Dictionary.Tests
             };
         }
 
-        public IEnumerable<MemberInfo> GetMemberInfos(Type type) =>
+        public MemberInfo[] GetMemberInfos(Type type) =>
             type?
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public).Cast<MemberInfo>()
                 .Concat(type.GetFields(BindingFlags.Instance | BindingFlags.Public))
-                .Where(x => !x.GetCustomAttributes<JsonIgnoreAttribute>().Any()) ?? Array.Empty<Type>();
+                .Where(x => !x.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray() ?? Array.Empty<Type>();
     }
 }
