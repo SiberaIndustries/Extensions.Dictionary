@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Extensions.Dictionary.Tests
