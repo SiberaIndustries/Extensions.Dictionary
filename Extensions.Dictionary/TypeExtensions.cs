@@ -42,9 +42,7 @@ namespace Extensions.Dictionary
                 }
             }
 
-            var array = new MemberInfo[list.Count];
-            list.CopyTo(array);
-            return array;
+            return list.ToArray();
         }
     }
 }

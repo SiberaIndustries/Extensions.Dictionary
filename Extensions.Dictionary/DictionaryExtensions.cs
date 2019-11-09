@@ -13,7 +13,7 @@ namespace Extensions.Dictionary
         private static readonly Type ObjectType = typeof(object);
         private static readonly Type GenericDictionaryType = typeof(Dictionary<,>);
         private static readonly Type GenericDictionaryInterfaceType = typeof(IDictionary<,>);
-        private static readonly Type[] AllowedEnumarableTypes = new[] { typeof(IList<>), typeof(IEnumerable<>), typeof(ICollection<>) };
+        private static readonly Type[] AllowedEnumarableTypes = { typeof(IList<>), typeof(IEnumerable<>), typeof(ICollection<>) };
 
         /// <summary>
         /// Converts a dictionary to the specific .NET type.
@@ -47,8 +47,7 @@ namespace Extensions.Dictionary
 
                 if (memberInfo == null)
                 {
-                    // TODO: Think about a 'AllKeysMustMatch' solution
-                    // throw new NotSupportedException($"Property or field '{type.Name}.{element.Key}' could not be found");
+                    // Think about a 'AllKeysMustMatch' solution
                     continue;
                 }
 
