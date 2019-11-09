@@ -13,7 +13,7 @@ namespace Extensions.Dictionary.Resolver
         /// </summary>
         /// <param name="memberInfo">MemberInfo object.</param>
         /// <returns>The name of the propety.</returns>
-        public string GetPropertyName(MemberInfo memberInfo);
+        public string GetMemberName(MemberInfo memberInfo);
 
         /// <summary>
         /// Returns the value of the property.
@@ -21,7 +21,7 @@ namespace Extensions.Dictionary.Resolver
         /// <param name="memberInfo">MemberInfo object.</param>
         /// <param name="instance">The instance of the object.</param>
         /// <returns>The value of the propety.</returns>
-        public object? GetPropertyValue(MemberInfo memberInfo, object? instance);
+        public object? GetMemberValue(MemberInfo memberInfo, object? instance);
 
         /// <summary>
         /// Returns the necessary MemberInfo objects.

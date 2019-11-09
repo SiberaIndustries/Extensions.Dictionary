@@ -13,19 +13,19 @@ namespace Extensions.Dictionary.Resolver
         protected MemoryCache MemberInfoCache { get; } = new MemoryCache(CacheOptions);
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public virtual string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
+        public virtual string GetMemberName(MemberInfo memberInfo) => memberInfo == null
             ? throw new ArgumentNullException(nameof(memberInfo))
             : memberInfo.Name;
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public virtual object? GetPropertyValue(MemberInfo memberInfo, object? instance)
+        public virtual object? GetMemberValue(MemberInfo memberInfo, object? instance)
         {
             return memberInfo?.MemberType switch
             {
                 MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(instance),
                 MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(instance),
                 null => throw new ArgumentNullException(nameof(memberInfo)),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.MemberType} not supported")
+                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };
         }
 

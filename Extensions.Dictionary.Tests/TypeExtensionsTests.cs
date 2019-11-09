@@ -15,7 +15,6 @@ namespace Extensions.Dictionary.Tests
                 typeof(float),
                 typeof(double),
                 typeof(long),
-                typeof(DateTime),
             };
 
             Assert.All(types, x => Assert.True(x.IsSimpleType()));

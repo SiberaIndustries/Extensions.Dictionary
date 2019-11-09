@@ -1,13 +1,17 @@
 ﻿using Extensions.Dictionary.Resolver;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
 
 namespace Extensions.Dictionary
 {
     public static class ObjectExtensions
     {
-        internal static bool IsSimpleType(this object? instance) =>
-            instance == null || instance.GetType().IsSimpleType();
+        private const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
+        private const string Key = "Key";
+        private const string Value = "Value";
 
         /// <summary>
         /// Converts an object to a dictionary recursively.
@@ -17,52 +21,79 @@ namespace Extensions.Dictionary
         /// <param name="serializerResolver">Optional serialzer resolver.</param>
         /// <returns>The converted dictionary.</returns>
         public static IDictionary<string, object?> ToDictionary<T>(this T instance, ISerializerResolver? serializerResolver = null)
-            where T : new() =>
-            instance.ToDictionaryInternal(serializerResolver ?? DefaultResolver.Instance);
+            where T : new() => instance == null
+            ? throw new ArgumentNullException(nameof(instance))
+            : instance.ToDictionaryInternal(serializerResolver ?? DefaultResolver.Instance);
 
-        internal static IDictionary<string, object?> ToDictionaryInternal<T>(this T instance, in ISerializerResolver serializerResolver)
-           where T : new()
+        internal static IDictionary<string, object?> ToDictionaryInternal(this object instance, ISerializerResolver serializerResolver)
         {
             var resultDictionary = new Dictionary<string, object?>();
-
-            // Dictionary
-            if (instance is IDictionary dictionary)
+            var type = instance.GetType();
+            if (type.IsGenericType)
             {
-                foreach (var key in dictionary.Keys)
-                {
-                    resultDictionary[key.ToString()] = dictionary[key].IsSimpleType()
-                        ? dictionary[key]
-                        : dictionary[key].ToDictionaryInternal(serializerResolver);
+                var gernTypeDef = type.GetGenericTypeDefinition();
+                if (gernTypeDef == typeof(Dictionary<,>))
+                {   // Dictionary
+                    if (type.GetGenericArguments()[1].IsSimpleType())
+                    {
+                        foreach (var item in (IEnumerable)instance)
+                        {
+                            var itemType = item.GetType();
+                            var value = itemType.GetProperty(Value, PublicInstanceFlags).GetValue(item);
+                            resultDictionary[itemType.GetProperty(Key, PublicInstanceFlags).GetValue(item).ToString()] = value;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in (IEnumerable)instance)
+                        {
+                            var itemType = item.GetType();
+                            var value = itemType.GetProperty(Value, PublicInstanceFlags).GetValue(item);
+                            resultDictionary[itemType.GetProperty(Key, PublicInstanceFlags).GetValue(item).ToString()] = value.IsSimpleType()
+                                ? value
+                                : value.ToDictionaryInternal(serializerResolver);
+                        }
+                    }
                 }
-
-                return resultDictionary;
-            }
-
-            // Array
-            if (instance is IEnumerable entries)
-            {
-                int i = 0;
-                foreach (var value in entries)
-                {
-                    resultDictionary[string.Empty + i++] = value.IsSimpleType()
-                        ? value
-                        : value.ToDictionaryInternal(serializerResolver);
+                else
+                {   // Array
+                    if (type.GetGenericArguments()[0].IsSimpleType())
+                    {
+                        var i = 0;
+                        foreach (var item in (IEnumerable)instance)
+                        {
+                            resultDictionary[i++.ToString(CultureInfo.InvariantCulture)] = item;
+                        }
+                    }
+                    else
+                    {
+                        var i = 0;
+                        foreach (var item in (IEnumerable)instance)
+                        {
+                            resultDictionary[i++.ToString(CultureInfo.InvariantCulture)] = item.IsSimpleType()
+                                ? item
+                                : item.ToDictionaryInternal(serializerResolver);
+                        }
+                    }
                 }
 
                 return resultDictionary;
             }
 
             // Everything else
-            var members = serializerResolver.GetMemberInfos(instance?.GetType());
+            var members = serializerResolver.GetMemberInfos(type);
             foreach (var member in members)
             {
                 var value = member.GetValue(instance, serializerResolver);
-                resultDictionary[member.GetName(serializerResolver)] = value.IsSimpleType()
+                resultDictionary[member.GetName(serializerResolver)] = value == null || value.IsSimpleType()
                     ? value
                     : value.ToDictionaryInternal(serializerResolver);
             }
 
             return resultDictionary;
         }
+
+        internal static bool IsSimpleType(this object? instance) =>
+            instance == null || instance.GetType().IsSimpleType();
     }
 }

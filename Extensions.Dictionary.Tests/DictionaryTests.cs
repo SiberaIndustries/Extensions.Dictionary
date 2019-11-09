@@ -55,7 +55,7 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>(resolver, new[] { new Vector3Converter() });
+            var result = dictionary.ToInstance<DictionaryDummy>(resolver);
             Assert.Equal(dummy, result);
 
             var result2 = dictionary.ToInstance<DictionaryDummy>(resolver);
@@ -88,13 +88,13 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(Array.Empty<MemberInfo>(), resolver.GetMemberInfos(null));
 
-            var ex1 = Assert.Throws<ArgumentNullException>(() => resolver.GetPropertyName(null));
+            var ex1 = Assert.Throws<ArgumentNullException>(() => resolver.GetMemberName(null));
             Assert.Equal("memberInfo", ex1.ParamName);
 
-            var ex2 = Assert.Throws<ArgumentNullException>(() => resolver.GetPropertyValue(null, null));
+            var ex2 = Assert.Throws<ArgumentNullException>(() => resolver.GetMemberValue(null, null));
             Assert.Equal("memberInfo", ex2.ParamName);
 
-            Assert.Throws<NotSupportedException>(() => resolver.GetPropertyValue(GetType().GetMethods()[0], null));
+            Assert.Throws<NotSupportedException>(() => resolver.GetMemberValue(GetType().GetMethods()[0], null));
         }
 
         [Theory]
@@ -126,7 +126,7 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>(resolver, new[] { new Vector3Converter() });
+            var result = dictionary.ToInstance<DictionaryDummy>(resolver);
             Assert.Equal(dummy, result);
 
             var result2 = dictionary.ToInstance<DictionaryDummy>(resolver);

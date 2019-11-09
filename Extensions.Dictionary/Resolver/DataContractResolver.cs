@@ -16,22 +16,41 @@ namespace Extensions.Dictionary.Resolver
         public bool InspectAncestors { get; set; } = true;
 
         /// <inheritdoc cref="BaseResolver" />
-        public override string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
-            ? throw new ArgumentNullException(nameof(memberInfo))
-            : MemberInfoCache.GetOrCreate(memberInfo.DeclaringType.FullName + '.' + memberInfo.Name, (entry) =>
+        public override string GetMemberName(MemberInfo memberInfo)
+        {
+            if (memberInfo == null)
             {
-                var attribute = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors);
-                if (attribute != null)
-                {
-                    return ((DataMemberAttribute)attribute).Name ?? memberInfo.Name;
-                }
+                throw new ArgumentNullException(nameof(memberInfo));
+            }
 
-                return memberInfo.Name;
-            });
+            var key = memberInfo.DeclaringType.FullName + '.' + memberInfo.Name;
+            if (MemberInfoCache.TryGetValue(key, out string value))
+            {
+                return value;
+            }
+
+            var attribute = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors);
+            value = attribute != null
+                ? ((DataMemberAttribute)attribute).Name ?? memberInfo.Name
+                : memberInfo.Name;
+            return MemberInfoCache.Set(key, value);
+        }
 
         /// <inheritdoc cref="BaseResolver" />
-        public override MemberInfo[] GetMemberInfos(Type? type) => type == null
-            ? Array.Empty<MemberInfo>()
-            : MemberInfoCache.GetOrCreate(type.FullName, (entry) => type.GetPropertiesAndFieldsFiltered(IgnoreDataMemberAttrType, InspectAncestors));
+        public override MemberInfo[] GetMemberInfos(Type? type)
+        {
+            if (type == null)
+            {
+                return Array.Empty<MemberInfo>();
+            }
+
+            var key = type.FullName;
+            if (MemberInfoCache.TryGetValue(key, out MemberInfo[] value))
+            {
+                return value;
+            }
+
+            return MemberInfoCache.Set(key, type.GetPropertiesAndFieldsFiltered(IgnoreDataMemberAttrType, InspectAncestors));
+        }
     }
 }

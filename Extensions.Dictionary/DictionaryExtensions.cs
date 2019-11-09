@@ -5,15 +5,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Extensions.Dictionary
 {
     public static class DictionaryExtensions
     {
         private static readonly Type ObjectType = typeof(object);
-        private static readonly Type GenericDictionaryType = typeof(IDictionary<,>);
+        private static readonly Type GenericDictionaryType = typeof(Dictionary<,>);
+        private static readonly Type GenericDictionaryInterfaceType = typeof(IDictionary<,>);
         private static readonly Type[] AllowedEnumarableTypes = new[] { typeof(IList<>), typeof(IEnumerable<>), typeof(ICollection<>) };
 
         /// <summary>
@@ -22,15 +21,14 @@ namespace Extensions.Dictionary
         /// <typeparam name="T">The type of the object to convert to.</typeparam>
         /// <param name="dictionary">The dictionary to convert.</param>
         /// <param name="serializerResolver">Optional serialzer resolver.</param>
-        /// <param name="converters">Additional custom converter.</param>
         /// <returns>The converted object.</returns>
-        public static T ToInstance<T>(this IDictionary<string, object?> dictionary, ISerializerResolver? serializerResolver = null, IEnumerable<JsonConverter>? converters = null)
+        public static T ToInstance<T>(this IDictionary<string, object?> dictionary, ISerializerResolver? serializerResolver = null)
                 where T : new() => dictionary == null
                 ? throw new ArgumentNullException(nameof(dictionary))
-                : (T)ToInstanceInternal(dictionary, typeof(T), serializerResolver ?? DefaultResolver.Instance, GetSerializerOptions(converters));
+                : (T)ToInstanceInternal((Dictionary<string, object?>)dictionary, typeof(T), serializerResolver ?? DefaultResolver.Instance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static object ToInstanceInternal(this IDictionary<string, object?> dictionary, Type type, ISerializerResolver serializerResolver, JsonSerializerOptions? options)
+        internal static object ToInstanceInternal(this Dictionary<string, object?> dictionary, Type type, ISerializerResolver serializerResolver)
         {
             var instance = Activator.CreateInstance(type);
             var memberInfos = serializerResolver.GetMemberInfos(type);
@@ -58,17 +56,17 @@ namespace Extensions.Dictionary
                 var memberInfoType = memberInfo.GetMemberType();
                 if (element.Value != null && element.Value.GetType() != memberInfoType)
                 {
-                    var dict = (IDictionary<string, object?>?)element.Value ?? new Dictionary<string, object?>(0);
+                    var dict = (Dictionary<string, object?>?)element.Value ?? new Dictionary<string, object?>(0);
                     if (memberInfoType.IsGenericType)
                     {
                         var genericTypeDef = memberInfoType.GetGenericTypeDefinition();
                         var genericArgs = memberInfoType.GetGenericArguments();
 
-                        if (genericTypeDef == GenericDictionaryType)
+                        if (genericTypeDef == GenericDictionaryInterfaceType)
                         {   // Is Dictionary
                             if (genericArgs[1] != ObjectType)
                             {
-                                value = dict.ConvertDictionary(memberInfoType);
+                                value = dict.ChangeValueType(memberInfoType);
                             }
                         }
                         else if (IsEnumerableType(genericTypeDef))
@@ -82,7 +80,7 @@ namespace Extensions.Dictionary
                     }
                     else
                     {
-                        value = ToInstanceInternal(dict, memberInfoType, serializerResolver, options);
+                        value = ToInstanceInternal(dict, memberInfoType, serializerResolver);
                     }
                 }
 
@@ -106,27 +104,7 @@ namespace Extensions.Dictionary
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static object ToInstanceFallback(object? value, Type type, JsonSerializerOptions? options = null) =>
-            JsonSerializer.Deserialize(JsonSerializer.SerializeToUtf8Bytes(value), type, options);
-
-        private static JsonSerializerOptions? GetSerializerOptions(IEnumerable<JsonConverter>? converters)
-        {
-            if (converters != null)
-            {
-                var options = new JsonSerializerOptions();
-                foreach (var converter in converters)
-                {
-                    options.Converters.Add(converter);
-                }
-
-                return options;
-            }
-
-            return null;
-        }
-
-        private static object ConvertList(this ICollection<object?> items, Type type, bool convert = false)
+        private static object ConvertList(this Dictionary<string, object?>.ValueCollection items, Type type, bool convert = false)
         {
             var array = Array.CreateInstance(type.GenericTypeArguments[0], items.Count);
             var containedType = type.GenericTypeArguments[0];
@@ -144,9 +122,9 @@ namespace Extensions.Dictionary
             return array;
         }
 
-        private static object ConvertDictionary(this IDictionary<string, object?> dict, Type type)
+        private static object ChangeValueType(this Dictionary<string, object?> dict, Type type)
         {
-            var dictToCast = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(new[] { type.GenericTypeArguments[0], type.GenericTypeArguments[1] }));
+            var dictToCast = (IDictionary)Activator.CreateInstance(GenericDictionaryType.MakeGenericType(new[] { type.GenericTypeArguments[0], type.GenericTypeArguments[1] }));
             foreach (var pair in dict)
             {
                 dictToCast.Add(pair.Key, pair.Value);
