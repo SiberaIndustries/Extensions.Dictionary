@@ -19,16 +19,41 @@ In the source file where you will be using Dictionary Extensions import the name
 using Extensions.Dictionary;
 ```
 
+Sample class:
+
+```cs
+[DataContract]
+public class Person
+{
+    [DataMember(Name = "Name1")]
+    public string Firstname { get; set; }
+
+    [IgnoreDataMember]
+    public string Lastname { get; set; }
+}
+```
+
 Convert an instance to a dictionary:
 
 ```cs
-Person person = ..;
+var person = new Person { Firstname = "foo", Lastname = "bar" };
 
 // Option 1: Convert all public properties and instance fields
 var dictionary1 = person.ToDictionary();
 
+// result:
+// { 
+//     { "Firstname" = "foo" },
+//     { "Lastname" = "bar" }
+// }
+
 // Option 2: Same as option 1 + respect DataContract attributes (DataMember / IgnoreDataMember)
 var dictionary2 = person.ToDictionary(new DataContractResolver());
+
+// result:
+// { 
+//     { "Name1" = "foo" }
+// }
 ```
 
 Convert a dictionary back to it's typed instance:
