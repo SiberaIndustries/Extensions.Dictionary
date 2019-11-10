@@ -26,6 +26,7 @@ namespace Extensions.Dictionary.Tests
             };
 
             dummy.Col1.Add(3);
+            dummy.Col2.Add(true);
             dummy.Dict1.Add("val3", true);
             dummy.Dict2.Add("val3", 3);
         }
@@ -50,6 +51,7 @@ namespace Extensions.Dictionary.Tests
                 { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" }, { "val3", true } } },
                 { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 }, { "val3", 3 } } },
                 { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
+                { nameof(DictionaryDummy.Col2), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", "3" }, { "3", true } } },
                 { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
             };
 
@@ -121,6 +123,7 @@ namespace Extensions.Dictionary.Tests
                 { nameof(DictionaryDummy.Dict1), new Dictionary<string, object> { { "val1", 1 }, { "val2", "2" }, { "val3", true } } },
                 { nameof(DictionaryDummy.Dict2), new Dictionary<string, object> { { "val1", 1 }, { "val2", 2 }, { "val3", 3 } } },
                 { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
+                { nameof(DictionaryDummy.Col2), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", "3" }, { "3", true } } },
                 { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
             };
 
