@@ -7,9 +7,10 @@ namespace Extensions.Dictionary
     internal static class TypeExtensions
     {
         private const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
+        private static readonly Type StringType = typeof(string);
 
         public static bool IsSimpleType(this Type? type) =>
-            type == null || type.IsPrimitive || type == typeof(string);
+            type == null || type.IsPrimitive || type == StringType;
 
         public static MemberInfo[] GetPropertiesAndFields(this Type type)
         {

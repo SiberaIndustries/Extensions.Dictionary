@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Extensions.Dictionary
 {
@@ -27,7 +26,6 @@ namespace Extensions.Dictionary
                 ? throw new ArgumentNullException(nameof(dictionary))
                 : (T)ToInstanceInternal((Dictionary<string, object?>)dictionary, typeof(T), serializerResolver ?? DefaultResolver.Instance);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static object ToInstanceInternal(this Dictionary<string, object?> dictionary, Type type, ISerializerResolver serializerResolver)
         {
             var instance = Activator.CreateInstance(type);
@@ -53,9 +51,9 @@ namespace Extensions.Dictionary
 
                 var value = element.Value;
                 var memberInfoType = memberInfo.GetMemberType();
-                if (element.Value != null && element.Value.GetType() != memberInfoType)
+                if (value != null && value.GetType() != memberInfoType)
                 {
-                    var dict = (Dictionary<string, object?>?)element.Value ?? new Dictionary<string, object?>(0);
+                    var dict = (Dictionary<string, object?>?)value ?? new Dictionary<string, object?>(0);
                     if (memberInfoType.IsGenericType)
                     {
                         var genericTypeDef = memberInfoType.GetGenericTypeDefinition();
@@ -89,7 +87,6 @@ namespace Extensions.Dictionary
             return instance;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsEnumerableType(Type type)
         {
             for (int i = 0; i < AllowedEnumarableTypes.Length; i++)

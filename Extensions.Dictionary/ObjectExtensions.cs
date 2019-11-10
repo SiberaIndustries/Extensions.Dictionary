@@ -12,6 +12,7 @@ namespace Extensions.Dictionary
         private const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
         private const string Key = "Key";
         private const string Value = "Value";
+        private static readonly Type GenericDictionaryType = typeof(Dictionary<,>);
 
         /// <summary>
         /// Converts an object to a dictionary recursively.
@@ -32,7 +33,7 @@ namespace Extensions.Dictionary
             if (type.IsGenericType)
             {
                 var gernTypeDef = type.GetGenericTypeDefinition();
-                if (gernTypeDef == typeof(Dictionary<,>))
+                if (gernTypeDef == GenericDictionaryType)
                 {   // Dictionary
                     if (type.GetGenericArguments()[1].IsSimpleType())
                     {
