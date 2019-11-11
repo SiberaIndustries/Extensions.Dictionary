@@ -18,12 +18,13 @@ namespace Extensions.Dictionary.Resolver
             : memberInfo.Name;
 
         /// <inheritdoc cref="ISerializerResolver" />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062", Justification = "Null case is checked!")]
         public virtual object? GetMemberValue(MemberInfo memberInfo, object? instance)
         {
-            return memberInfo?.MemberType switch
+            return memberInfo switch
             {
-                MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(instance),
-                MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(instance),
+                PropertyInfo propertyInfo => propertyInfo.GetValue(instance),
+                FieldInfo fieldInfo => fieldInfo.GetValue(instance),
                 null => throw new ArgumentNullException(nameof(memberInfo)),
                 _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };

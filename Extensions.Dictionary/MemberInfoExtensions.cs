@@ -11,13 +11,13 @@ namespace Extensions.Dictionary
 
         public static void SetValue(this MemberInfo memberInfo, object? instance, object? value)
         {
-            switch (memberInfo?.MemberType)
+            switch (memberInfo)
             {
-                case MemberTypes.Property:
-                    ((PropertyInfo)memberInfo).SetValue(instance, value);
+                case PropertyInfo propertyInfo:
+                    propertyInfo.SetValue(instance, value);
                     break;
-                case MemberTypes.Field:
-                    ((FieldInfo)memberInfo).SetValue(instance, value);
+                case FieldInfo fieldInfo:
+                    fieldInfo.SetValue(instance, value);
                     break;
                 case null:
                     throw new ArgumentNullException(nameof(memberInfo));
@@ -28,10 +28,10 @@ namespace Extensions.Dictionary
 
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
-            return memberInfo?.MemberType switch
+            return memberInfo switch
             {
-                MemberTypes.Property => ((PropertyInfo)memberInfo).PropertyType,
-                MemberTypes.Field => ((FieldInfo)memberInfo).FieldType,
+                PropertyInfo propertyInfo => propertyInfo.PropertyType,
+                FieldInfo fieldInfo => fieldInfo.FieldType,
                 null => throw new ArgumentNullException(nameof(memberInfo)),
                 _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };
@@ -42,10 +42,10 @@ namespace Extensions.Dictionary
 
         public static bool IsSimpleType(this MemberInfo memberInfo)
         {
-            return memberInfo?.MemberType switch
+            return memberInfo switch
             {
-                MemberTypes.Property => ((PropertyInfo)memberInfo).PropertyType.IsSimpleType(),
-                MemberTypes.Field => ((FieldInfo)memberInfo).FieldType.IsSimpleType(),
+                PropertyInfo propertyInfo => propertyInfo.PropertyType.IsSimpleType(),
+                FieldInfo fieldInfo => fieldInfo.FieldType.IsSimpleType(),
                 null => throw new ArgumentNullException(nameof(memberInfo)),
                 _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };

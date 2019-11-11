@@ -29,9 +29,8 @@ namespace Extensions.Dictionary.Resolver
                 return value;
             }
 
-            var attribute = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors);
-            value = attribute != null
-                ? ((DataMemberAttribute)attribute).Name ?? memberInfo.Name
+            value = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors) is DataMemberAttribute dataMember
+                ? dataMember.Name ?? memberInfo.Name
                 : memberInfo.Name;
             return MemberInfoCache.Set(key, value);
         }

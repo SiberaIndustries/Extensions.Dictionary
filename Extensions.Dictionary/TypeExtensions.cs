@@ -14,8 +14,8 @@ namespace Extensions.Dictionary
 
         public static MemberInfo[] GetPropertiesAndFields(this Type type)
         {
-            var props = (MemberInfo[])type.GetProperties(PublicInstanceFlags);
-            var fields = (MemberInfo[])type.GetFields(PublicInstanceFlags);
+            var props = type.GetProperties(PublicInstanceFlags) as MemberInfo[];
+            var fields = type.GetFields(PublicInstanceFlags) as MemberInfo[];
 
             var oldLength = props.Length;
             Array.Resize(ref props, props.Length + fields.Length);
@@ -25,8 +25,8 @@ namespace Extensions.Dictionary
 
         public static MemberInfo[] GetPropertiesAndFieldsFiltered(this Type type, Type attributeType, bool inspectAncestors = false)
         {
-            var props = (MemberInfo[])type.GetProperties(PublicInstanceFlags);
-            var fields = (MemberInfo[])type.GetFields(PublicInstanceFlags);
+            var props = type.GetProperties(PublicInstanceFlags) as MemberInfo[];
+            var fields = type.GetFields(PublicInstanceFlags) as MemberInfo[];
 
             var max = props.Length > fields.Length ? props.Length : fields.Length;
             var list = new List<MemberInfo>(props.Length + fields.Length);
