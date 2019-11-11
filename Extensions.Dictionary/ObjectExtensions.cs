@@ -3,17 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 
 namespace Extensions.Dictionary
 {
     public static class ObjectExtensions
     {
-        private const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
-        private const string Key = "Key";
-        private const string Value = "Value";
-        private static readonly Type GenericDictionaryType = typeof(Dictionary<,>);
-
         /// <summary>
         /// Converts an object to a dictionary recursively.
         /// </summary>
@@ -28,67 +22,77 @@ namespace Extensions.Dictionary
 
         internal static IDictionary<string, object?> ToDictionaryInternal(this object instance, ISerializerResolver serializerResolver)
         {
-            var resultDictionary = new Dictionary<string, object?>();
-            var type = instance.GetType();
-            if (type.IsGenericType)
+            if (instance is IDictionary dictionary)
             {
-                var gernTypeDef = type.GetGenericTypeDefinition();
-                if (gernTypeDef == GenericDictionaryType)
-                {   // Dictionary
-                    if (type.GetGenericArguments()[1].IsSimpleType())
-                    {
-                        foreach (var item in (IEnumerable)instance)
-                        {
-                            var itemType = item.GetType();
-                            var value = itemType.GetProperty(Value, PublicInstanceFlags).GetValue(item);
-                            resultDictionary[itemType.GetProperty(Key, PublicInstanceFlags).GetValue(item).ToString()] = value;
-                        }
-                    }
-                    else
-                    {
-                        foreach (var item in (IEnumerable)instance)
-                        {
-                            var itemType = item.GetType();
-                            var value = itemType.GetProperty(Value, PublicInstanceFlags).GetValue(item);
-                            resultDictionary[itemType.GetProperty(Key, PublicInstanceFlags).GetValue(item).ToString()] = value.IsSimpleType()
-                                ? value
-                                : value.ToDictionaryInternal(serializerResolver);
-                        }
-                    }
-                }
-                else
-                {   // Array
-                    if (type.GetGenericArguments()[0].IsSimpleType())
-                    {
-                        var i = 0;
-                        foreach (var item in (IEnumerable)instance)
-                        {
-                            resultDictionary[i++.ToString(CultureInfo.InvariantCulture)] = item;
-                        }
-                    }
-                    else
-                    {
-                        var i = 0;
-                        foreach (var item in (IEnumerable)instance)
-                        {
-                            resultDictionary[i++.ToString(CultureInfo.InvariantCulture)] = item.IsSimpleType()
-                                ? item
-                                : item.ToDictionaryInternal(serializerResolver);
-                        }
-                    }
-                }
-
-                return resultDictionary;
+                return dictionary.ConvertFromDictionary(serializerResolver);
             }
 
-            // Everything else
-            var members = serializerResolver.GetMemberInfos(type);
+            if (instance is ICollection entries)
+            {
+                return entries.ConvertFromEnumerable(serializerResolver);
+            }
+
+            var members = serializerResolver.GetMemberInfos(instance.GetType());
+            var resultDictionary = new Dictionary<string, object?>(members.Length);
             foreach (var member in members)
             {
                 var value = member.GetValue(instance, serializerResolver);
                 resultDictionary[member.GetName(serializerResolver)] = value == null || value.IsSimpleType()
                     ? value
                     : value.ToDictionaryInternal(serializerResolver);
+            }
+
+            return resultDictionary;
+        }
+
+        internal static IDictionary<string, object?> ConvertFromDictionary(this IDictionary dictionary, ISerializerResolver serializerResolver)
+        {
+            if (dictionary is IDictionary<string, object?> dict)
+            {
+                return dict;
+            }
+
+            var resultDictionary = new Dictionary<string, object?>(dictionary.Count);
+            if (dictionary.GetType().GetGenericArguments()[1].IsSimpleType())
+            {
+                foreach (var key in dictionary.Keys)
+                {
+                    resultDictionary[key.ToString()] = dictionary[key];
+                }
+            }
+            else
+            {
+                foreach (var key in dictionary.Keys)
+                {
+                    resultDictionary[key.ToString()] = dictionary[key].IsSimpleType()
+                        ? dictionary[key]
+                        : dictionary[key].ToDictionaryInternal(serializerResolver);
+                }
+            }
+
+            return resultDictionary;
+        }
+
+        internal static IDictionary<string, object?> ConvertFromEnumerable(this ICollection entries, ISerializerResolver serializerResolver)
+        {
+            var resultDictionary = new Dictionary<string, object?>(entries.Count);
+            if (entries.GetType().GetGenericArguments()[0].IsSimpleType())
+            {
+                int i = 0;
+                foreach (var value in entries)
+                {
+                    resultDictionary[i++.ToString(CultureInfo.InvariantCulture)] = value;
+                }
+            }
+            else
+            {
+                int i = 0;
+                foreach (var value in entries)
+                {
+                    resultDictionary[i++.ToString(CultureInfo.InvariantCulture)] = value.IsSimpleType()
+                        ? value
+                        : value.ToDictionaryInternal(serializerResolver);
+                }
             }
 
             return resultDictionary;

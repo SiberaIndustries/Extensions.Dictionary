@@ -32,16 +32,7 @@ namespace Extensions.Dictionary
 
             foreach (var element in dictionary)
             {
-                var memberInfo = default(MemberInfo);
-                for (int i = 0; i < memberInfos.Length; i++)
-                {
-                    if (memberInfos[i].GetName(serializerResolver) == element.Key || memberInfos[i].Name == element.Key)
-                    {
-                        memberInfo = memberInfos[i];
-                        break;
-                    }
-                }
-
+                var memberInfo = memberInfos.FindMatch(element.Key, serializerResolver);
                 if (memberInfo == null)
                 {
                     // Think about a 'AllKeysMustMatch' solution
@@ -84,6 +75,19 @@ namespace Extensions.Dictionary
             }
 
             return instance;
+        }
+
+        internal static MemberInfo? FindMatch(this MemberInfo[] memberInfos, string name, ISerializerResolver serializerResolver)
+        {
+            for (int i = 0; i < memberInfos.Length; i++)
+            {
+                if (memberInfos[i].GetName(serializerResolver) == name || memberInfos[i].Name == name)
+                {
+                    return memberInfos[i];
+                }
+            }
+
+            return null;
         }
 
         private static bool IsEnumerableType(Type type)
