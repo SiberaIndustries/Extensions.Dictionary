@@ -30,7 +30,7 @@ namespace Extensions.Dictionary.Tests
             var invalidPropInfo = dummyType.GetMethod(nameof(MemberInfoDummy.Method1));
 
             var ex = Assert.Throws<NotSupportedException>(() => invalidPropInfo.IsSimpleType());
-            Assert.Equal("MemberType Method not supported", ex.Message);
+            Assert.Equal("MemberType MemberInfoDummy.Method1 is not a property or field", ex.Message);
         }
 
         [Fact]

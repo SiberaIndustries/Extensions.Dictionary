@@ -45,7 +45,9 @@ namespace Extensions.Dictionary.Tests
             { "val2", 2 }
         };
 
-        public IList<int> Col1 { get; private set; } = new List<int> { 1, 2 };
+        public IEnumerable<int> Col1 { get; private set; } = new List<int> { 1, 2 };
+
+        public IList<object> Col2 { get; private set; } = new List<object> { 1, 2, "3" };
 
         public Vector3 Vec3 { get; set; } = new Vector3(1f, 2f, 3f);
 
@@ -72,6 +74,7 @@ namespace Extensions.Dictionary.Tests
                 && new DictionaryComparer<string, object>().Equals(Dict1, other.Dict1)
                 && new DictionaryComparer<string, int>().Equals(Dict2, other.Dict2)
                 && Enumerable.SequenceEqual(Col1, other.Col1)
+                && Enumerable.SequenceEqual(Col2, other.Col2)
                 && Vec3.Equals(other.Vec3);
         }
     }

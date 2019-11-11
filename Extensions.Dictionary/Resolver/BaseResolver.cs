@@ -1,38 +1,37 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Extensions.Dictionary.Resolver
 {
     public abstract class BaseResolver : ISerializerResolver, IDisposable
     {
-        protected const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
         private static readonly IOptions<MemoryCacheOptions> CacheOptions = Options.Create(new MemoryCacheOptions());
         private bool disposed;
 
         protected MemoryCache MemberInfoCache { get; } = new MemoryCache(CacheOptions);
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public virtual string GetPropertyName(MemberInfo memberInfo) => memberInfo == null
+        public virtual string GetMemberName(MemberInfo memberInfo) => memberInfo == null
             ? throw new ArgumentNullException(nameof(memberInfo))
             : memberInfo.Name;
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public virtual object? GetPropertyValue(MemberInfo memberInfo, object? instance)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062", Justification = "Null case is checked!")]
+        public virtual object? GetMemberValue(MemberInfo memberInfo, object? instance)
         {
-            return memberInfo?.MemberType switch
+            return memberInfo switch
             {
-                MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(instance),
-                MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(instance),
+                PropertyInfo propertyInfo => propertyInfo.GetValue(instance),
+                FieldInfo fieldInfo => fieldInfo.GetValue(instance),
                 null => throw new ArgumentNullException(nameof(memberInfo)),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.MemberType} not supported")
+                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };
         }
 
         /// <inheritdoc cref="ISerializerResolver" />
-        public abstract IEnumerable<MemberInfo> GetMemberInfos(Type? type);
+        public abstract MemberInfo[] GetMemberInfos(Type? type);
 
         /// <inheritdoc cref="IDisposable" />
         public void Dispose()

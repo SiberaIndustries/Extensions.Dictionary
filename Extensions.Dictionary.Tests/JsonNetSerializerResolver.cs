@@ -1,7 +1,6 @@
 ﻿using Extensions.Dictionary.Resolver;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +9,7 @@ namespace Extensions.Dictionary.Tests
 {
     public class JsonNetSerializerResolver : ISerializerResolver
     {
-        public string GetPropertyName(MemberInfo memberInfo)
+        public string GetMemberName(MemberInfo memberInfo)
         {
             if (memberInfo == null)
             {
@@ -20,7 +19,7 @@ namespace Extensions.Dictionary.Tests
             return memberInfo.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? memberInfo.Name;
         }
 
-        public object GetPropertyValue(MemberInfo memberInfo, object instance)
+        public object GetMemberValue(MemberInfo memberInfo, object instance)
         {
             var convertertype = memberInfo.GetCustomAttribute<JsonConverterAttribute>();
             if (convertertype != null)
@@ -37,14 +36,14 @@ namespace Extensions.Dictionary.Tests
                 MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(instance),
                 MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(instance),
                 null => throw new ArgumentNullException(nameof(memberInfo)),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.MemberType} not supported")
+                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };
         }
 
-        public IEnumerable<MemberInfo> GetMemberInfos(Type type) =>
+        public MemberInfo[] GetMemberInfos(Type type) =>
             type?
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public).Cast<MemberInfo>()
                 .Concat(type.GetFields(BindingFlags.Instance | BindingFlags.Public))
-                .Where(x => !x.GetCustomAttributes<JsonIgnoreAttribute>().Any()) ?? Array.Empty<Type>();
+                .Where(x => !x.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray() ?? Array.Empty<Type>();
     }
 }
