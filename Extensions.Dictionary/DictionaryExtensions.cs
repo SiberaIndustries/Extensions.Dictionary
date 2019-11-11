@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 
 namespace Extensions.Dictionary
@@ -100,19 +99,13 @@ namespace Extensions.Dictionary
             return false;
         }
 
-        private static object ConvertList(this Dictionary<string, object?>.ValueCollection items, Type type, bool convert = false)
+        private static object ConvertList(this Dictionary<string, object?>.ValueCollection items, Type type)
         {
             var array = Array.CreateInstance(type.GenericTypeArguments[0], items.Count);
-            var containedType = type.GenericTypeArguments[0];
-
             int i = 0;
             foreach (var item in items)
             {
-                var value = convert
-                    ? Convert.ChangeType(item, containedType, CultureInfo.InvariantCulture)
-                    : item;
-                array.SetValue(value, i);
-                i++;
+                array.SetValue(item, i++);
             }
 
             return array;
