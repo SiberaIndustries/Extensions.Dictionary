@@ -118,22 +118,22 @@ Intel Core i7-6700HQ CPU 2.60GHz (Skylake), 1 CPU, 8 logical and 8 physical core
 
 ### Convert to dictionary
 
-|                              Method |   N |         Mean |        Error |      StdDev | Ratio | RatioSD | Rank |    Gen 0 |   Gen 1 | Gen 2 |  Allocated |
-|------------------------------------ |---- |-------------:|-------------:|------------:|------:|--------:|-----:|---------:|--------:|------:|-----------:|
-|                     DefaultResolver |   1 |     8.476 us |     4.071 us |   0.2231 us |  1.00 |    0.00 |    1 |   0.7629 |       - |     - |    2.35 KB |
-|                DataContractResolver |   1 |    14.066 us |     7.840 us |   0.4298 us |  1.66 |    0.09 |    2 |   1.1902 |       - |     - |    3.66 KB |
-| DataContractResolver-IgnoreAncestors |   1 |    15.612 us |    27.879 us |   1.5281 us |  1.84 |    0.16 |    3 |   1.1902 |       - |     - |    3.66 KB |
-|                     JsonNetResolver |   1 |    61.831 us |    59.470 us |   3.2597 us |  7.29 |    0.29 |    4 |   5.6152 |       - |     - |   17.21 KB |
-|                                     |     |              |              |             |       |         |      |          |         |       |            |
-|                     DefaultResolver |  10 |    75.555 us |     9.707 us |   0.5321 us |  1.00 |    0.00 |    1 |   7.6904 |       - |     - |   23.82 KB |
-|                DataContractResolver |  10 |   134.207 us |    33.168 us |   1.8180 us |  1.78 |    0.03 |    2 |  11.9629 |       - |     - |   36.88 KB |
-| DataContractResolver-IgnoreAncestors |  10 |   142.756 us |    31.539 us |   1.7288 us |  1.89 |    0.03 |    3 |  11.9629 |       - |     - |   36.88 KB |
-|                     JsonNetResolver |  10 |   474.820 us |   173.911 us |   9.5326 us |  6.28 |    0.11 |    4 |  55.6641 |       - |     - |  172.55 KB |
-|                                     |     |              |              |             |       |         |      |          |         |       |            |
-|                     DefaultResolver | 100 |   818.978 us |   813.624 us |  44.5975 us |  1.00 |    0.00 |    1 |  69.3359 | 16.6016 |     - |  238.46 KB |
-|                DataContractResolver | 100 | 1,565.105 us | 1,005.751 us |  55.1286 us |  1.91 |    0.08 |    3 | 105.4688 | 29.2969 |     - |  369.04 KB |
-| DataContractResolver-IgnoreAncestors | 100 | 1,491.541 us |   568.329 us |  31.1520 us |  1.83 |    0.13 |    2 | 105.4688 | 23.4375 |     - |  369.05 KB |
-|                     JsonNetResolver | 100 | 5,538.160 us | 5,166.537 us | 283.1953 us |  6.76 |    0.06 |    4 | 492.1875 | 78.1250 |     - | 1725.11 KB |
+|                              Method |   N |      Mean |       Error |    StdDev | Ratio | RatioSD | Rank |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------------------------ |---- |----------:|------------:|----------:|------:|--------:|-----:|-------:|------:|------:|----------:|
+|                     DefaultResolver |   1 |  7.453 us |   9.8603 us | 0.5405 us |  1.00 |    0.00 |    1 | 0.5798 |     - |     - |   1.81 KB |
+|                DataContractResolver |   1 | 14.038 us |  16.3036 us | 0.8937 us |  1.89 |    0.20 |    3 | 0.9918 |     - |     - |   3.07 KB |
+| DataContractResolver-IgnoreAncestors |   1 | 13.784 us |   0.4209 us | 0.0231 us |  1.86 |    0.13 |    2 | 0.9918 |     - |     - |   3.07 KB |
+|                     JsonNetResolver |   1 | 59.822 us |  48.8324 us | 2.6767 us |  8.05 |    0.64 |    4 | 5.8594 |     - |     - |     18 KB |
+|                                     |     |           |             |           |       |         |      |        |       |       |           |
+|                     DefaultResolver |  10 |  6.866 us |  10.7596 us | 0.5898 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
+|                DataContractResolver |  10 | 17.311 us |  31.3831 us | 1.7202 us |  2.53 |    0.28 |    3 | 0.9918 |     - |     - |   3.07 KB |
+| DataContractResolver-IgnoreAncestors |  10 | 15.352 us |  10.4117 us | 0.5707 us |  2.24 |    0.12 |    2 | 0.9918 |     - |     - |   3.07 KB |
+|                     JsonNetResolver |  10 | 61.376 us | 153.7049 us | 8.4251 us |  9.02 |    1.80 |    4 | 5.8594 |     - |     - |     18 KB |
+|                                     |     |           |             |           |       |         |      |        |       |       |           |
+|                     DefaultResolver | 100 |  6.744 us |   6.8390 us | 0.3749 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
+|                DataContractResolver | 100 | 16.925 us |   2.2942 us | 0.1258 us |  2.52 |    0.15 |    3 | 0.9766 |     - |     - |   3.07 KB |
+| DataContractResolver-IgnoreAncestors | 100 | 16.271 us |  22.4270 us | 1.2293 us |  2.41 |    0.12 |    2 | 0.9918 |     - |     - |   3.07 KB |
+|                     JsonNetResolver | 100 | 56.603 us |  17.5337 us | 0.9611 us |  8.41 |    0.36 |    4 | 5.8594 |     - |     - |     18 KB |
 
 ### Convert to instance
 
