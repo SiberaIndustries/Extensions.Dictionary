@@ -45,7 +45,7 @@ namespace Extensions.Dictionary.Tests
             { "val2", 2 }
         };
 
-        public IList<int> Col1 { get; private set; } = new List<int> { 1, 2 };
+        public IEnumerable<int> Col1 { get; private set; } = new List<int> { 1, 2 };
 
         public IList<object> Col2 { get; private set; } = new List<object> { 1, 2, "3" };
 

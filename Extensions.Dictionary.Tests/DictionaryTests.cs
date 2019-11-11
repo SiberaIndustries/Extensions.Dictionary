@@ -25,7 +25,7 @@ namespace Extensions.Dictionary.Tests
                 Vec3 = new Vector3(3, 2, 1)
             };
 
-            dummy.Col1.Add(3);
+            ((IList<int>)dummy.Col1).Add(3);
             dummy.Col2.Add(true);
             dummy.Dict1.Add("val3", true);
             dummy.Dict2.Add("val3", 3);
