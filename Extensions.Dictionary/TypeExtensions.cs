@@ -17,9 +17,13 @@ namespace Extensions.Dictionary
             var props = type.GetProperties(PublicInstanceFlags) as MemberInfo[];
             var fields = type.GetFields(PublicInstanceFlags) as MemberInfo[];
 
-            var oldLength = props.Length;
-            Array.Resize(ref props, props.Length + fields.Length);
-            fields.CopyTo(props, oldLength);
+            if (fields.Length > 0)
+            {
+                var oldLength = props.Length;
+                Array.Resize(ref props, props.Length + fields.Length);
+                fields.CopyTo(props, oldLength);
+            }
+
             return props;
         }
 
