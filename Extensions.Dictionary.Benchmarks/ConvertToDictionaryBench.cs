@@ -11,10 +11,10 @@ namespace Extensions.Dictionary.Benchmarks
     public class ConvertToDictionaryBench
     {
         private readonly DictionaryDummy dummy = new DictionaryDummy();
-        private readonly ISerializerResolver defaultResolver = new DefaultResolver();
-        private readonly ISerializerResolver dataContractResolver = new DataContractResolver();
-        private readonly ISerializerResolver dataContractResolverIgnoreAncestors = new DataContractResolver { InspectAncestors = false };
-        private readonly ISerializerResolver jsonResolver = new JsonNetSerializerResolver();
+        private readonly ConverterSettings defaultResolver = new ConverterSettings { Resolver = new DefaultResolver() };
+        private readonly ConverterSettings dataContractResolver = new ConverterSettings { Resolver = new DataContractResolver() };
+        private readonly ConverterSettings dataContractResolverIgnoreAncestors = new ConverterSettings { Resolver = new DataContractResolver { InspectAncestors = false } };
+        private readonly ConverterSettings jsonResolver = new ConverterSettings { Resolver = new JsonNetSerializerResolver() };
 
         [Params(1, 10, 100)]
         public int N;

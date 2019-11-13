@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Extensions.Dictionary.Resolver
+namespace Extensions.Dictionary
 {
     /// <summary>
     /// Represents an interface of how to resolve member information of an object.

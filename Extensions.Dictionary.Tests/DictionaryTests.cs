@@ -36,8 +36,8 @@ namespace Extensions.Dictionary.Tests
         [InlineData(nameof(DefaultResolver))]
         public void CreateDictionaryAndConvertItBack_Success(string resolverName)
         {
-            var resolver = GetResolver(resolverName);
-            var dictionary = dummy.ToDictionary(resolver);
+            var settings = new ConverterSettings { Resolver = GetResolver(resolverName) };
+            var dictionary = dummy.ToDictionary(settings);
             var expected = new Dictionary<string, object>
             {
                 { nameof(DictionaryDummy.String01), "A" },
@@ -57,10 +57,10 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>(resolver);
+            var result = dictionary.ToInstance<DictionaryDummy>(settings);
             Assert.Equal(dummy, result);
 
-            var result2 = dictionary.ToInstance<DictionaryDummy>(resolver);
+            var result2 = dictionary.ToInstance<DictionaryDummy>(settings);
             Assert.Equal(new Vector3(3, 2, 1), result2.Vec3);
         }
 
@@ -108,8 +108,8 @@ namespace Extensions.Dictionary.Tests
             dummy.String08 = nameof(DictionaryDummy.String08);
             dummy.String05 = nameof(DictionaryDummy.String05);
 
-            var resolver = GetResolver(resolverName);
-            var dictionary = dummy.ToDictionary(resolver);
+            var settings = new ConverterSettings { Resolver = GetResolver(resolverName) };
+            var dictionary = dummy.ToDictionary(settings);
             var expected = new Dictionary<string, object>
             {
                 { nameof(DictionaryDummy.String01), "A" },
@@ -129,10 +129,10 @@ namespace Extensions.Dictionary.Tests
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
 
-            var result = dictionary.ToInstance<DictionaryDummy>(resolver);
+            var result = dictionary.ToInstance<DictionaryDummy>(settings);
             Assert.Equal(dummy, result);
 
-            var result2 = dictionary.ToInstance<DictionaryDummy>(resolver);
+            var result2 = dictionary.ToInstance<DictionaryDummy>(settings);
             Assert.Equal(new Vector3(3, 2, 1), result2.Vec3);
         }
     }
