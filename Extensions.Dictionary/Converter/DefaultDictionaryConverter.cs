@@ -30,7 +30,7 @@ namespace Extensions.Dictionary.Converter
                     var keyString = key.ToString();
                     var keyValue = value[key];
                     dictionary[keyString] = keyValue.IsSimpleType()
-                        ? dictionary[keyString] = keyValue
+                        ? keyValue
                         : ToDictionary(dictionary, settings);
                 }
             }
