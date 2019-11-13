@@ -28,8 +28,9 @@ namespace Extensions.Dictionary.Converter
                 foreach (var key in value.Keys)
                 {
                     var keyString = key.ToString();
-                    dictionary[keyString] = value[key].IsSimpleType()
-                        ? dictionary[keyString] = value[key]
+                    var keyValue = value[key];
+                    dictionary[keyString] = keyValue.IsSimpleType()
+                        ? dictionary[keyString] = keyValue
                         : ToDictionary(dictionary, settings);
                 }
             }

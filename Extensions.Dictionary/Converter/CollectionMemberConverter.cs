@@ -27,6 +27,6 @@ namespace Extensions.Dictionary.Converter
             return ToInstance(value, new[] { typeof(string), type }, settings) as object;
         }
 
-        public abstract T ToInstance(IDictionary<string, object?> value, Type[] generyTypes, ConverterSettings settings);
+        public abstract T ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings);
     }
 }

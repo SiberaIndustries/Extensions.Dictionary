@@ -39,19 +39,19 @@ namespace Extensions.Dictionary.Converter
             return dictionary;
         }
 
-        public override ICollection ToInstance(IDictionary<string, object?> value, Type[] valueTypes, ConverterSettings settings)
+        public override ICollection ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (valueTypes == null)
+            if (genericTypes == null)
             {
-                throw new ArgumentNullException(nameof(valueTypes));
+                throw new ArgumentNullException(nameof(genericTypes));
             }
 
-            var array = Array.CreateInstance(valueTypes[1], value.Count);
+            var array = Array.CreateInstance(genericTypes[1], value.Count);
             int i = 0;
             foreach (var item in (Dictionary<string, object?>.ValueCollection)value.Values)
             {
