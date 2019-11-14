@@ -1,5 +1,6 @@
 ﻿using Extensions.Dictionary.Converter;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 
@@ -46,6 +47,7 @@ namespace Extensions.Dictionary.Tests.Converter
             if (!useTicks)
             {
                 dict.Remove(nameof(DateTime.Ticks));
+                ((IDictionary)dict[nameof(DateTimeOffset.Offset)]).Remove(nameof(TimeSpan.Ticks));
             }
 
             var result = converter.ToInstance(dict, settings);
