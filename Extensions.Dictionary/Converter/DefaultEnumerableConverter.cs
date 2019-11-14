@@ -5,17 +5,12 @@ using System.Globalization;
 
 namespace Extensions.Dictionary.Converter
 {
-    public sealed class DefaultEnumerableConverter : CollectionMemberConverter<ICollection>
+    internal sealed class DefaultEnumerableConverter : CollectionMemberConverter<ICollection>
     {
         public static readonly DefaultEnumerableConverter Default = new DefaultEnumerableConverter();
 
         public override IDictionary<string, object> ToDictionary(ICollection value, ConverterSettings settings)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
             var dictionary = new Dictionary<string, object>(value.Count);
             if (value.GetType().GetGenericArguments()[0].IsSimpleType())
             {
@@ -41,16 +36,6 @@ namespace Extensions.Dictionary.Converter
 
         public override ICollection ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            if (genericTypes == null)
-            {
-                throw new ArgumentNullException(nameof(genericTypes));
-            }
-
             var array = Array.CreateInstance(genericTypes[1], value.Count);
             int i = 0;
             foreach (var item in (Dictionary<string, object?>.ValueCollection)value.Values)

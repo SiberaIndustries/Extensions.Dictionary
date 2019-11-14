@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 namespace Extensions.Dictionary.Converter
 {
-    public abstract class CollectionMemberConverter<T> : MemberConverter
+    internal abstract class CollectionMemberConverter<T> : MemberConverter
     {
+        protected readonly Type[] GenericTypes = { typeof(string), typeof(object) };
+
         public sealed override bool CanConvert(Type objectType)
         {
             return typeof(T).IsAssignableFrom(objectType);
@@ -24,7 +26,8 @@ namespace Extensions.Dictionary.Converter
 
         public sealed override object? ToInstance(IDictionary<string, object?> value, Type type, ConverterSettings settings)
         {
-            return ToInstance(value, new[] { typeof(string), type }, settings) as object;
+            GenericTypes[1] = type;
+            return ToInstance(value, GenericTypes, settings) as object;
         }
 
         public abstract T ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings);

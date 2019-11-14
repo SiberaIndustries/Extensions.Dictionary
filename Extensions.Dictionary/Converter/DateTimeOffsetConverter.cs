@@ -17,6 +17,7 @@ namespace Extensions.Dictionary.Converter
                 { nameof(TimeSpan.Minutes), value.Offset.Minutes },
                 { nameof(TimeSpan.Seconds), value.Offset.Seconds },
                 { nameof(TimeSpan.Milliseconds), value.Offset.Milliseconds },
+                { nameof(TimeSpan.Ticks), value.Offset.Ticks },
             };
 
             return new Dictionary<string, object>(9)
