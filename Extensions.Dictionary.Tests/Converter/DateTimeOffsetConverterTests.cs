@@ -43,20 +43,11 @@ namespace Extensions.Dictionary.Tests.Converter
             var dict = converter.ToDictionary(date, settings);
             Assert.Equal(expected, dict);
 
-            if (useTicks)
+            if (!useTicks)
             {
-                expected.Clear();
-                expected.Add(nameof(DateTime.Ticks), 630823790450060000L);
-                expected.Add(nameof(DateTimeOffset.Offset), new Dictionary<string, object>
-                {
-                    { nameof(TimeSpan.Days), 0 },
-                    { nameof(TimeSpan.Hours), 0 },
-                    { nameof(TimeSpan.Minutes), 7 },
-                    { nameof(TimeSpan.Seconds), 0 },
-                    { nameof(TimeSpan.Milliseconds), 0 },
-                    { nameof(TimeSpan.Ticks), 4200000000L },
-                });
+                dict.Remove(nameof(DateTime.Ticks));
             }
+
             var result = converter.ToInstance(dict, settings);
             Assert.Equal(date, result);
         }

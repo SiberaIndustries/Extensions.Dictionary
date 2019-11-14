@@ -35,10 +35,9 @@ namespace Extensions.Dictionary.Tests.Converter
             var dict = converter.ToDictionary(date, settings);
             Assert.Equal(expected, dict);
 
-            if (useTicks)
+            if (!useTicks)
             {
-                expected.Clear();
-                expected.Add(nameof(DateTime.Ticks), 630823790450060000L);
+                dict.Remove(nameof(DateTime.Ticks));
             }
 
             var result = converter.ToInstance(dict, settings);
