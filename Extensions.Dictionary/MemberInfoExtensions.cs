@@ -1,5 +1,4 @@
-﻿using Extensions.Dictionary.Resolver;
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace Extensions.Dictionary
