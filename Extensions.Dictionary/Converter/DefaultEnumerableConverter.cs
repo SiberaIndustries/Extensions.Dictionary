@@ -11,8 +11,10 @@ namespace Extensions.Dictionary.Converter
 
         public override IDictionary<string, object> ToDictionary(ICollection value, ConverterSettings settings)
         {
+            var valueType = value.GetType();
+            var itemType = valueType.IsArray ? valueType : valueType.GetGenericArguments()[0];
             var dictionary = new Dictionary<string, object>(value.Count);
-            if (value.GetType().GetGenericArguments()[0].IsSimpleType())
+            if (itemType.IsSimpleType())
             {
                 int i = 0;
                 foreach (var element in value)
