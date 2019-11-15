@@ -41,7 +41,8 @@ var person = new Person { Firstname = "foo", Lastname = "bar" };
 var dictionary1 = person.ToDictionary(); 
 
 // Option 2: Same as option 1 + respect DataContract attributes (DataMember / IgnoreDataMember)
-var dictionary2 = person.ToDictionary(new DataContractResolver());
+var settings = new ConverterSettings { Resolver = new DataContractResolver() };
+var dictionary2 = person.ToDictionary(settings;
 
 // dictionary1: <Firstname = foo; Lastname = bar>
 // dictionary2: <Name1 = foo>
@@ -54,10 +55,52 @@ Convert a dictionary back to it's typed instance:
 var person1 = dictionary.ToInstance<Person>();
 
 // Option 2
-var person2 = dictionary.ToInstance<Person>(new DataContractResolver());
+var settings = new ConverterSettings { Resolver = new DataContractResolver() };
+var person2 = dictionary.ToInstance<Person>(settings);
 ```
 
 ## Extensibility
+
+### Custom MemberConverter
+
+This sample creates a custom converter from `MemberConverter<T>` that overrides conversion for the `System.Numerics.Vector3` class.
+
+```cs
+public class Vector3Converter : MemberConverter<Vector3>
+{
+    public override IDictionary<string, object> ToDictionary(Vector3 value, ConverterSettings settings)
+    {
+        return new Dictionary<string, object>
+        {
+            { nameof(Vector3.X), value.X },
+            { nameof(Vector3.Y), value.Y },
+            { nameof(Vector3.Z), value.Z },
+        };
+    }
+
+    public override Vector3 ToInstance(IDictionary<string, object?> value, ConverterSettings settings)
+    {
+        return new Vector3
+        {
+            X = float.Parse(value[nameof(Vector3.X)]?.ToString(), CultureInfo.InvariantCulture),
+            Y = float.Parse(value[nameof(Vector3.Y)]?.ToString(), CultureInfo.InvariantCulture),
+            Z = float.Parse(value[nameof(Vector3.Z)]?.ToString(), CultureInfo.InvariantCulture),
+        };
+    }
+}
+```
+
+```cs
+// Usage
+var plane = new Plane(1f, 1f, 1f, .1f);
+
+var settings = new ConverterSettings();
+settings.Converters.Add(new Vecto3Converter());
+
+var dict = plane.ToDictionary(settings);
+```
+
+### Custom Resolver
 
 It is possible to customize the member name / value extraction. Just implement the provided `ISerializerResolver` interface. The following code snipped shows an example of a [Json.NET](https://www.newtonsoft.com/json) resolver:
 
@@ -118,44 +161,44 @@ Intel Core i7-6700HQ CPU 2.60GHz (Skylake), 1 CPU, 8 logical and 8 physical core
 
 ### Convert to dictionary
 
-|                              Method |   N |      Mean |      Error |    StdDev | Ratio | RatioSD | Rank |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|------------------------------------ |---- |----------:|-----------:|----------:|------:|--------:|-----:|-------:|------:|------:|----------:|
-|                     DefaultResolver |   1 |  6.903 us |   6.876 us | 0.3769 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
-|                DataContractResolver |   1 | 14.859 us |   3.213 us | 0.1761 us |  2.16 |    0.14 |    2 | 0.9918 |     - |     - |   3.07 KB |
-| DataContractResolver-IgnoreAncestors |   1 | 15.035 us |  21.736 us | 1.1914 us |  2.18 |    0.20 |    3 | 0.9766 |     - |     - |   3.07 KB |
-|                     JsonNetResolver |   1 | 64.778 us | 126.838 us | 6.9524 us |  9.37 |    0.70 |    4 | 5.8594 |     - |     - |     18 KB |
-|                                     |     |           |            |           |       |         |      |        |       |       |           |
-|                     DefaultResolver |  10 |  6.783 us |   7.680 us | 0.4210 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
-|                DataContractResolver |  10 | 15.318 us |   5.995 us | 0.3286 us |  2.27 |    0.19 |    3 | 0.9918 |     - |     - |   3.07 KB |
-| DataContractResolver-IgnoreAncestors |  10 | 14.634 us |  15.415 us | 0.8449 us |  2.17 |    0.23 |    2 | 0.9918 |     - |     - |   3.07 KB |
-|                     JsonNetResolver |  10 | 62.176 us |  70.114 us | 3.8432 us |  9.17 |    0.42 |    4 | 5.8594 |     - |     - |     18 KB |
-|                                     |     |           |            |           |       |         |      |        |       |       |           |
-|                     DefaultResolver | 100 |  6.943 us |   7.232 us | 0.3964 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
-|                DataContractResolver | 100 | 15.081 us |   5.606 us | 0.3073 us |  2.18 |    0.16 |    3 | 0.9766 |     - |     - |   3.07 KB |
-| DataContractResolver-IgnoreAncestors | 100 | 14.863 us |   9.268 us | 0.5080 us |  2.15 |    0.19 |    2 | 0.9766 |     - |     - |   3.07 KB |
-|                     JsonNetResolver | 100 | 74.002 us |  64.702 us | 3.5466 us | 10.70 |    1.11 |    4 | 5.8594 |     - |     - |     18 KB |
+|                              Method |   N |      Mean |     Error |    StdDev | Ratio | RatioSD | Rank |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------------------------ |---- |----------:|----------:|----------:|------:|--------:|-----:|-------:|------:|------:|----------:|
+|                     DefaultResolver |   1 |  6.277 us | 12.242 us | 0.6710 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
+|                DataContractResolver |   1 | 16.106 us | 18.827 us | 1.0320 us |  2.59 |    0.35 |    3 | 0.9918 |     - |     - |   3.07 KB |
+| DataContractResolver-IgnoreAncestors |   1 | 12.773 us |  8.038 us | 0.4406 us |  2.05 |    0.15 |    2 | 0.9766 |     - |     - |   3.07 KB |
+|                     JsonNetResolver |   1 | 50.861 us | 56.199 us | 3.0805 us |  8.14 |    0.56 |    4 | 5.8594 |     - |     - |     18 KB |
+|                                     |     |           |           |           |       |         |      |        |       |       |           |
+|                     DefaultResolver |  10 |  5.572 us |  1.225 us | 0.0672 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
+|                DataContractResolver |  10 | 14.726 us | 33.944 us | 1.8606 us |  2.64 |    0.32 |    3 | 0.9918 |     - |     - |   3.07 KB |
+| DataContractResolver-IgnoreAncestors |  10 | 12.287 us |  1.493 us | 0.0818 us |  2.21 |    0.03 |    2 | 0.9918 |     - |     - |   3.07 KB |
+|                     JsonNetResolver |  10 | 52.918 us | 89.842 us | 4.9246 us |  9.50 |    1.00 |    4 | 5.8594 |     - |     - |     18 KB |
+|                                     |     |           |           |           |       |         |      |        |       |       |           |
+|                     DefaultResolver | 100 |  6.063 us |  4.733 us | 0.2595 us |  1.00 |    0.00 |    1 | 0.5875 |     - |     - |   1.81 KB |
+|                DataContractResolver | 100 | 12.419 us |  4.004 us | 0.2195 us |  2.05 |    0.06 |    2 | 0.9918 |     - |     - |   3.07 KB |
+| DataContractResolver-IgnoreAncestors | 100 | 12.413 us | 13.096 us | 0.7179 us |  2.05 |    0.20 |    2 | 0.9918 |     - |     - |   3.07 KB |
+|                     JsonNetResolver | 100 | 54.870 us | 36.022 us | 1.9745 us |  9.06 |    0.50 |    3 | 5.8594 |     - |     - |     18 KB |
 
 ### Convert to instance
 
-|                              Method |   N |        Mean |      Error |    StdDev |  Ratio | RatioSD | Rank |   Gen 0 | Gen 1 | Gen 2 | Allocated |
-|------------------------------------ |---- |------------:|-----------:|----------:|-------:|--------:|-----:|--------:|------:|------:|----------:|
-|                     DefaultResolver |   1 |    13.91 us |   6.249 us |  0.343 us |   1.00 |    0.00 |    1 |  0.7629 |     - |     - |   2.38 KB |
-|                DataContractResolver |   1 |    59.73 us |  22.023 us |  1.207 us |   4.30 |    0.19 |    3 |  3.8452 |     - |     - |  11.92 KB |
-| DataContractResolver-IgnoreAncestors |   1 |    61.63 us |  69.315 us |  3.799 us |   4.43 |    0.29 |    4 |  3.8452 |     - |     - |  11.92 KB |
-|                     JsonNetResolver |   1 |   187.46 us | 162.171 us |  8.889 us |  13.50 |    0.96 |    5 | 16.8457 |     - |     - |  51.71 KB |
-|                         PureJsonNet |   1 |    21.30 us |  21.346 us |  1.170 us |   1.53 |    0.09 |    2 |  2.4414 |     - |     - |   7.49 KB |
-|                                     |     |             |            |           |        |         |      |         |       |       |           |
-|                     DefaultResolver |  10 |    15.52 us |  40.324 us |  2.210 us |   1.00 |    0.00 |    1 |  0.7629 |     - |     - |   2.38 KB |
-|                DataContractResolver |  10 |    60.73 us | 138.117 us |  7.571 us |   3.96 |    0.62 |    3 |  3.8452 |     - |     - |  11.92 KB |
-| DataContractResolver-IgnoreAncestors |  10 |    56.83 us |  27.725 us |  1.520 us |   3.73 |    0.67 |    2 |  3.7842 |     - |     - |  11.92 KB |
-|                     JsonNetResolver |  10 |   174.38 us | 279.898 us | 15.342 us |  11.32 |    1.04 |    4 | 16.8457 |     - |     - |  51.71 KB |
-|                         PureJsonNet |  10 |   176.40 us | 122.064 us |  6.691 us |  11.58 |    2.25 |    5 | 11.2305 |     - |     - |  35.09 KB |
-|                                     |     |             |            |           |        |         |      |         |       |       |           |
-|                     DefaultResolver | 100 |    13.22 us |  25.314 us |  1.388 us |   1.00 |    0.00 |    1 |  0.7629 |     - |     - |   2.38 KB |
-|                DataContractResolver | 100 |    66.09 us | 108.747 us |  5.961 us |   5.00 |    0.20 |    3 |  3.8452 |     - |     - |  11.92 KB |
-| DataContractResolver-IgnoreAncestors | 100 |    61.97 us |  78.508 us |  4.303 us |   4.72 |    0.55 |    2 |  3.8452 |     - |     - |  11.92 KB |
-|                     JsonNetResolver | 100 |   189.03 us | 855.780 us | 46.908 us |  14.17 |    2.03 |    4 | 16.8457 |     - |     - |  51.71 KB |
-|                         PureJsonNet | 100 | 1,707.06 us | 666.239 us | 36.519 us | 130.18 |   15.68 |    5 | 93.7500 |     - |     - | 292.02 KB |
+|                              Method |   N |        Mean |        Error |     StdDev |  Ratio | RatioSD | Rank |   Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------------------------ |---- |------------:|-------------:|-----------:|-------:|--------:|-----:|--------:|------:|------:|----------:|
+|                     DefaultResolver |   1 |    10.76 us |     0.491 us |   0.027 us |   1.00 |    0.00 |    1 |  0.7019 |     - |     - |   2.18 KB |
+|                DataContractResolver |   1 |    53.33 us |    61.631 us |   3.378 us |   4.96 |    0.32 |    3 |  3.7842 |     - |     - |  11.72 KB |
+| DataContractResolver-IgnoreAncestors |   1 |    54.74 us |    99.851 us |   5.473 us |   5.09 |    0.51 |    4 |  3.7842 |     - |     - |  11.72 KB |
+|                     JsonNetResolver |   1 |   161.86 us |    94.736 us |   5.193 us |  15.05 |    0.46 |    5 | 16.6016 |     - |     - |  51.52 KB |
+|                         PureJsonNet |   1 |    18.55 us |    24.079 us |   1.320 us |   1.72 |    0.12 |    2 |  2.4414 |     - |     - |   7.49 KB |
+|                                     |     |             |              |            |        |         |      |         |       |       |           |
+|                     DefaultResolver |  10 |    11.64 us |    18.704 us |   1.025 us |   1.00 |    0.00 |    1 |  0.7019 |     - |     - |   2.18 KB |
+|                DataContractResolver |  10 |    64.32 us |   118.677 us |   6.505 us |   5.53 |    0.42 |    3 |  3.7842 |     - |     - |  11.72 KB |
+| DataContractResolver-IgnoreAncestors |  10 |    54.44 us |    22.665 us |   1.242 us |   4.70 |    0.40 |    2 |  3.7842 |     - |     - |  11.72 KB |
+|                     JsonNetResolver |  10 |   169.81 us |   208.025 us |  11.403 us |  14.66 |    1.68 |    5 | 16.6016 |     - |     - |  51.52 KB |
+|                         PureJsonNet |  10 |   163.40 us |   185.507 us |  10.168 us |  14.10 |    1.48 |    4 | 11.2305 |     - |     - |  35.09 KB |
+|                                     |     |             |              |            |        |         |      |         |       |       |           |
+|                     DefaultResolver | 100 |    13.51 us |    13.977 us |   0.766 us |   1.00 |    0.00 |    1 |  0.7019 |     - |     - |   2.18 KB |
+|                DataContractResolver | 100 |    64.19 us |    64.332 us |   3.526 us |   4.76 |    0.36 |    3 |  3.7842 |     - |     - |  11.72 KB |
+| DataContractResolver-IgnoreAncestors | 100 |    56.80 us |    92.891 us |   5.092 us |   4.20 |    0.28 |    2 |  3.7842 |     - |     - |  11.72 KB |
+|                     JsonNetResolver | 100 |   138.36 us |    34.188 us |   1.874 us |  10.26 |    0.44 |    4 | 16.6016 |     - |     - |  51.52 KB |
+|                         PureJsonNet | 100 | 1,858.79 us | 6,022.705 us | 330.125 us | 137.79 |   24.91 |    5 | 93.7500 |     - |     - | 292.02 KB |
 
 ## Open Source License Acknowledgements and Third-Party Copyrights
 
