@@ -1,4 +1,5 @@
 ﻿using Extensions.Dictionary.Converter;
+using Extensions.Dictionary.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;

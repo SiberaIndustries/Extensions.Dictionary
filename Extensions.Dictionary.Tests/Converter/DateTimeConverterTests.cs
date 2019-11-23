@@ -9,6 +9,11 @@ namespace Extensions.Dictionary.Tests.Converter
     {
         private readonly ConverterSettings settings = new ConverterSettings();
         private readonly DateTimeConverter converter = new DateTimeConverter();
+        private readonly IDictionary<string, object> expectedMinimum = new Dictionary<string, object>
+        {
+            { nameof(DateTime.Ticks), 630823790450060000L },
+            { nameof(DateTime.Kind), DateTimeKind.Utc },
+        };
         private readonly IDictionary<string, object> expected = new Dictionary<string, object>
         {
             { nameof(DateTime.Year), 2000 },
@@ -23,22 +28,45 @@ namespace Extensions.Dictionary.Tests.Converter
         };
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void ConvertToDateTime_Success(bool useTicks)
+        [InlineData(EnumValueHandling.Default)]
+        [InlineData(EnumValueHandling.UnderlyingValue)]
+        public void ConvertToDateTime_Success(EnumValueHandling handling)
         {
-            var date = useTicks
-                ? new DateTime(630823790450060000L, DateTimeKind.Utc)
-                : new DateTime(2000, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc);
+            if (handling == EnumValueHandling.UnderlyingValue)
+            {
+                expected[nameof(DateTime.Kind)] = (int)expected[nameof(DateTime.Kind)];
+            }
+
+            settings.EnumHandling = handling;
+            settings.DateHandling = DateValueHandling.Default;
+            var date = new DateTime(2000, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc);
             Assert.True(converter.CanConvert(date.GetType()));
 
             var dict = converter.ToDictionary(date, settings);
             Assert.Equal(expected, dict);
 
-            if (!useTicks)
+            dict.Remove(nameof(DateTime.Ticks));
+            var result = converter.ToInstance(dict, settings);
+            Assert.Equal(date, result);
+        }
+
+        [Theory]
+        [InlineData(EnumValueHandling.Default)]
+        [InlineData(EnumValueHandling.UnderlyingValue)]
+        public void ConvertToMinimumDateTime_Success(EnumValueHandling handling)
+        {
+            if (handling == EnumValueHandling.UnderlyingValue)
             {
-                dict.Remove(nameof(DateTime.Ticks));
+                expectedMinimum[nameof(DateTime.Kind)] = (int)expectedMinimum[nameof(DateTime.Kind)];
             }
+
+            settings.EnumHandling = handling;
+            settings.DateHandling = DateValueHandling.Minimum;
+            var date = new DateTime(630823790450060000L, DateTimeKind.Utc);
+            Assert.True(converter.CanConvert(date.GetType()));
+
+            var dict = converter.ToDictionary(date, settings);
+            Assert.Equal(expectedMinimum, dict);
 
             var result = converter.ToInstance(dict, settings);
             Assert.Equal(date, result);

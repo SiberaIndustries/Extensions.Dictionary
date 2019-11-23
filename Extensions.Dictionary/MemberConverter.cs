@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Extensions.Dictionary
 {
@@ -7,8 +6,8 @@ namespace Extensions.Dictionary
     {
         public abstract bool CanConvert(Type objectType);
 
-        public abstract IDictionary<string, object> ToDictionary(object? value, ConverterSettings settings);
+        public abstract object ToDictionary(object? value, ConverterSettings settings);
 
-        public abstract object? ToInstance(IDictionary<string, object?> value, Type type, ConverterSettings settings);
+        public abstract object? ToInstance(object value, Type type, ConverterSettings settings);
     }
 }

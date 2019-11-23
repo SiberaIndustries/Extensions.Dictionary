@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extensions.Dictionary.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,7 +30,7 @@ namespace Extensions.Dictionary.Converter
                 {
                     var keyString = key.ToString();
                     var keyValue = value[key];
-                    dictionary[keyString] = keyValue.IsSimpleType()
+                    dictionary[keyString] = keyValue.GetType().IsSimpleType()
                         ? keyValue
                         : ToDictionary(dictionary, settings);
                 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extensions.Dictionary.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,7 +28,7 @@ namespace Extensions.Dictionary.Converter
                 int i = 0;
                 foreach (var element in value)
                 {
-                    dictionary[i++.ToString(CultureInfo.InvariantCulture)] = element.IsSimpleType()
+                    dictionary[i++.ToString(CultureInfo.InvariantCulture)] = element.GetType().IsSimpleType()
                         ? element
                         : element.ToDictionaryInternal(settings);
                 }
