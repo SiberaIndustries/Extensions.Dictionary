@@ -6,12 +6,12 @@ namespace Extensions.Dictionary.Converter
     {
         public static readonly GuidConverter Default = new GuidConverter();
 
-        public override object ToDictionary(Guid value, ConverterSettings settings)
+        public override object Convert(Guid value, ConverterSettings settings)
         {
             return value.ToString();
         }
 
-        public override Guid ToInstance(object value, ConverterSettings settings)
+        public override Guid ConvertBack(object value, ConverterSettings settings)
         {
             return Guid.Parse(value.ToString());
         }

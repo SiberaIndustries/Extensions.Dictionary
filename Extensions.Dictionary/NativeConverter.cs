@@ -9,28 +9,28 @@ namespace Extensions.Dictionary
             return typeof(T).IsAssignableFrom(objectType);
         }
 
-        public sealed override object ToDictionary(object? value, ConverterSettings settings)
+        public sealed override object Convert(object? value, ConverterSettings settings)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return ToDictionary((T)value, settings);
+            return Convert((T)value, settings);
         }
 
-        public abstract object ToDictionary(T value, ConverterSettings settings);
+        public abstract object Convert(T value, ConverterSettings settings);
 
-        public sealed override object? ToInstance(object value, Type type, ConverterSettings settings)
+        public sealed override object? ConvertBack(object value, Type type, ConverterSettings settings)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return ToInstance(value, settings) as object;
+            return ConvertBack(value, settings) as object;
         }
 
-        public abstract T ToInstance(object value, ConverterSettings settings);
+        public abstract T ConvertBack(object value, ConverterSettings settings);
     }
 }

@@ -165,25 +165,6 @@ namespace Extensions.Dictionary.Internal
             return PrimitiveTypeCode.Object;
         }
 
-        public static ulong ToUInt64(object value)
-        {
-            var typeCode = GetTypeCode(value.GetType());
-            return typeCode switch
-            {
-                PrimitiveTypeCode.SByte => (ulong)(sbyte)value,
-                PrimitiveTypeCode.Byte => (byte)value,
-                PrimitiveTypeCode.Boolean => Convert.ToByte((bool)value),
-                PrimitiveTypeCode.Int16 => (ulong)(short)value,
-                PrimitiveTypeCode.UInt16 => (ushort)value,
-                PrimitiveTypeCode.Char => (char)value,
-                PrimitiveTypeCode.UInt32 => (uint)value,
-                PrimitiveTypeCode.Int32 => (ulong)(int)value,
-                PrimitiveTypeCode.UInt64 => (ulong)value,
-                PrimitiveTypeCode.Int64 => (ulong)(long)value,
-                _ => throw new InvalidOperationException(),
-            };
-        }
-
         public static object? ConVal(this object? initialValue, Type targetType, ConverterSettings settings) =>
             TryConvertValue(initialValue, targetType, settings, out object? value)
                 ? value
@@ -402,7 +383,7 @@ namespace Extensions.Dictionary.Internal
             throw new InvalidCastException();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "HAA0601:Value type to reference type conversion causing boxing allocation", Justification = "It is needed")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "HAA0601:Value type to reference type conversion causing boxing allocation", Justification = "Explicit casts required")]
         public static object FromBigInteger(BigInteger i, Type targetType)
         {
             return GetTypeCode(targetType) switch

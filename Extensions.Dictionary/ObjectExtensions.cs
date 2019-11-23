@@ -24,7 +24,7 @@ namespace Extensions.Dictionary
             var converter = settings.GetMatchingConverter(instanceType);
             if (converter != null)
             {
-                return (IDictionary<string, object?>)converter.ToDictionary(instance, settings);
+                return (IDictionary<string, object?>)converter.Convert(instance, settings);
             }
 
             var resolver = settings.ResolverInternal;
@@ -43,7 +43,7 @@ namespace Extensions.Dictionary
                 converter = settings.GetMatchingConverter(value.GetType());
                 if (converter != null)
                 {
-                    resultDictionary[key] = converter.ToDictionary(value, settings);
+                    resultDictionary[key] = converter.Convert(value, settings);
                     continue;
                 }
 

@@ -3,7 +3,7 @@ using Extensions.Dictionary.Resolver;
 using Xunit;
 using static Extensions.Dictionary.Tests.MemberInfoDummy;
 
-namespace Extensions.Dictionary.Tests
+namespace Extensions.Dictionary.Tests.Internal
 {
     public class MemberInfoExtensionsTests : TestFixture
     {

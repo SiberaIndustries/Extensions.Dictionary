@@ -15,10 +15,10 @@ namespace Extensions.Dictionary.Tests.Converter
             var guid = Guid.NewGuid();
             Assert.True(converter.CanConvert(guid.GetType()));
 
-            var dict = converter.ToDictionary(guid, settings);
+            var dict = converter.Convert(guid, settings);
             Assert.Equal(guid.ToString(), dict);
 
-            var result = converter.ToInstance(dict, settings);
+            var result = converter.ConvertBack(dict, settings);
             Assert.Equal(guid, result);
         }
     }

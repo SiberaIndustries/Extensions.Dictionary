@@ -18,12 +18,12 @@ namespace Extensions.Dictionary.Tests.Converter
 
         public class FloatConverter : NativeConverter<float>
         {
-            public override object ToDictionary(float value, ConverterSettings settings)
+            public override object Convert(float value, ConverterSettings settings)
             {
                 return value.ToString();
             }
 
-            public override float ToInstance(object value, ConverterSettings settings)
+            public override float ConvertBack(object value, ConverterSettings settings)
             {
                 return float.Parse(value.ToString());
             }
@@ -38,9 +38,9 @@ namespace Extensions.Dictionary.Tests.Converter
                 {
                     return new Dictionary<string, object>(3)
                     {
-                        { nameof(CustomVector.X), converter.ToDictionary(999f, settings) },
-                        { nameof(CustomVector.Y), converter.ToDictionary(999f, settings) },
-                        { nameof(CustomVector.Z), converter.ToDictionary(null, settings) },
+                        { nameof(CustomVector.X), converter.Convert(999f, settings) },
+                        { nameof(CustomVector.Y), converter.Convert(999f, settings) },
+                        { nameof(CustomVector.Z), converter.Convert(null, settings) },
                     };
                 }
 
@@ -59,9 +59,9 @@ namespace Extensions.Dictionary.Tests.Converter
                 {
                     return new CustomVector
                     {
-                        X = (float?)converter.ToInstance(value[nameof(CustomVector.X)], typeof(float?), settings),
-                        Y = (float?)converter.ToInstance(value[nameof(CustomVector.Y)], typeof(float?), settings),
-                        Z = (float?)converter.ToInstance(value[nameof(CustomVector.Z)], typeof(float?), settings),
+                        X = (float?)converter.ConvertBack(value[nameof(CustomVector.X)], typeof(float?), settings),
+                        Y = (float?)converter.ConvertBack(value[nameof(CustomVector.Y)], typeof(float?), settings),
+                        Z = (float?)converter.ConvertBack(value[nameof(CustomVector.Z)], typeof(float?), settings),
                     };
                 }
 
@@ -97,10 +97,10 @@ namespace Extensions.Dictionary.Tests.Converter
         {
             Assert.True(floatConverter.CanConvert(typeof(float)));
 
-            var dict = floatConverter.ToDictionary((object)123f, settings);
+            var dict = floatConverter.Convert((object)123f, settings);
             Assert.Equal("123", dict);
 
-            var result = floatConverter.ToInstance(dict, typeof(float), settings);
+            var result = floatConverter.ConvertBack(dict, typeof(float), settings);
             Assert.Equal(123f, result);
         }
 
@@ -111,10 +111,10 @@ namespace Extensions.Dictionary.Tests.Converter
             Assert.True(floatConverter.CanConvert(typeof(float)));
 
             ArgumentNullException ex;
-            ex = Assert.Throws<ArgumentNullException>(() => floatConverter.ToDictionary(null, settings));
+            ex = Assert.Throws<ArgumentNullException>(() => floatConverter.Convert(null, settings));
             Assert.Equal("value", ex.ParamName);
 
-            ex = Assert.Throws<ArgumentNullException>(() => floatConverter.ToInstance(null, typeof(float), settings));
+            ex = Assert.Throws<ArgumentNullException>(() => floatConverter.ConvertBack(null, typeof(float), settings));
             Assert.Equal("value", ex.ParamName);
         }
 
@@ -143,10 +143,10 @@ namespace Extensions.Dictionary.Tests.Converter
         {
             Assert.True(customVectorConverter.CanConvert(vec1.GetType()));
 
-            var dict = customVectorConverter.ToDictionary((object)vec1, settings);
+            var dict = customVectorConverter.Convert((object)vec1, settings);
             Assert.Equal(expected2, dict);
 
-            var result = customVectorConverter.ToInstance(dict, typeof(CustomVector), settings);
+            var result = customVectorConverter.ConvertBack(dict, typeof(CustomVector), settings);
             Assert.Equal(vec2, result);
         }
 
@@ -154,10 +154,10 @@ namespace Extensions.Dictionary.Tests.Converter
         public void ConvertToCustomVector3WithNullValues_Exception()
         {
             ArgumentNullException ex;
-            ex = Assert.Throws<ArgumentNullException>(() => customVectorConverter.ToDictionary(null, settings));
+            ex = Assert.Throws<ArgumentNullException>(() => customVectorConverter.Convert(null, settings));
             Assert.Equal("value", ex.ParamName);
 
-            ex = Assert.Throws<ArgumentNullException>(() => customVectorConverter.ToInstance(null, typeof(CustomVector), settings));
+            ex = Assert.Throws<ArgumentNullException>(() => customVectorConverter.ConvertBack(null, typeof(CustomVector), settings));
             Assert.Equal("value", ex.ParamName);
         }
     }

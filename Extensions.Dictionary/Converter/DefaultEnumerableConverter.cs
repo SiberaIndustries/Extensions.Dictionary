@@ -10,7 +10,7 @@ namespace Extensions.Dictionary.Converter
     {
         public static readonly DefaultEnumerableConverter Default = new DefaultEnumerableConverter();
 
-        public override IDictionary<string, object> ToDictionary(ICollection value, ConverterSettings settings)
+        public override IDictionary<string, object> Convert(ICollection value, ConverterSettings settings)
         {
             var valueType = value.GetType();
             var itemType = valueType.IsArray ? valueType : valueType.GetGenericArguments()[0];
@@ -37,7 +37,7 @@ namespace Extensions.Dictionary.Converter
             return dictionary;
         }
 
-        public override ICollection ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
+        public override ICollection ConvertBack(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
         {
             var array = Array.CreateInstance(genericTypes[1], value.Count);
             int i = 0;

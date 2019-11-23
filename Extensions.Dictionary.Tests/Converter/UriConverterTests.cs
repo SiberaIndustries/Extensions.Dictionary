@@ -17,10 +17,10 @@ namespace Extensions.Dictionary.Tests.Converter
             var uri = new Uri(uriString, kind);
             Assert.True(converter.CanConvert(uri.GetType()));
 
-            var dict = converter.ToDictionary(uri, settings);
+            var dict = converter.Convert(uri, settings);
             Assert.Equal(uri.ToString(), dict);
 
-            var result = converter.ToInstance(dict, settings);
+            var result = converter.ConvertBack(dict, settings);
             Assert.Equal(uri, result);
         }
     }

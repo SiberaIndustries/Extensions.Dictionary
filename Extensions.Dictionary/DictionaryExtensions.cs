@@ -32,7 +32,7 @@ namespace Extensions.Dictionary
             var converter = settings.GetMatchingConverter(type);
             if (converter != null)
             {
-                return converter.ToInstance(dictionary, type, settings) ?? throw new InvalidOperationException();
+                return converter.ConvertBack(dictionary, type, settings) ?? throw new InvalidOperationException();
             }
 
             var instance = Activator.CreateInstance(type);
@@ -84,14 +84,14 @@ namespace Extensions.Dictionary
                     // Dictionary
                     if (GenericDictionaryInterfaceType.IsAssignableFrom(genTypeDef) || GenericDictionaryType.IsAssignableFrom(genTypeDef))
                     {
-                        member.SetValue(instance, DefaultDictionaryConverter.Default.ToInstance(dict, memberType.GetGenericArguments()[1], settings));
+                        member.SetValue(instance, DefaultDictionaryConverter.Default.ConvertBack(dict, memberType.GetGenericArguments()[1], settings));
                         continue;
                     }
 
                     // Array
                     if (EnumerableType.IsAssignableFrom(genTypeDef))
                     {
-                        member.SetValue(instance, DefaultEnumerableConverter.Default.ToInstance(dict, memberType.GetGenericArguments()[0], settings));
+                        member.SetValue(instance, DefaultEnumerableConverter.Default.ConvertBack(dict, memberType.GetGenericArguments()[0], settings));
                         continue;
                     }
                 }
@@ -99,7 +99,7 @@ namespace Extensions.Dictionary
                 converter = settings.GetMatchingConverter(memberType);
                 if (value != null && converter != null)
                 {
-                    member.SetValue(instance, converter.ToInstance((IDictionary<string, object?>)value, ObjectType, settings));
+                    member.SetValue(instance, converter.ConvertBack((IDictionary<string, object?>)value, ObjectType, settings));
                     continue;
                 }
 

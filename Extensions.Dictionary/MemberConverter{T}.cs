@@ -10,7 +10,7 @@ namespace Extensions.Dictionary
             return typeof(T).IsAssignableFrom(objectType);
         }
 
-        public sealed override object ToDictionary(object? value, ConverterSettings settings)
+        public sealed override object Convert(object? value, ConverterSettings settings)
         {
             if (value == null)
             {
@@ -22,7 +22,7 @@ namespace Extensions.Dictionary
 
         public abstract IDictionary<string, object> ToDictionary(T value, ConverterSettings settings);
 
-        public sealed override object? ToInstance(object value, Type type, ConverterSettings settings)
+        public sealed override object? ConvertBack(object value, Type type, ConverterSettings settings)
         {
             if (value == null)
             {
