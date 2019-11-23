@@ -29,6 +29,12 @@ namespace Extensions.Dictionary
 
         internal static object ToInstanceInternal(this Dictionary<string, object?> dictionary, Type type, ConverterSettings settings)
         {
+            var converter = settings.GetMatchingConverter(type);
+            if (converter != null)
+            {
+                return converter.ToInstance(dictionary, type, settings) ?? throw new InvalidOperationException();
+            }
+
             var instance = Activator.CreateInstance(type);
             var resolver = settings.ResolverInternal;
             var members = resolver.GetMemberInfos(type);
@@ -90,7 +96,7 @@ namespace Extensions.Dictionary
                     }
                 }
 
-                var converter = settings.GetMatchingConverter(memberType);
+                converter = settings.GetMatchingConverter(memberType);
                 if (value != null && converter != null)
                 {
                     member.SetValue(instance, converter.ToInstance((IDictionary<string, object?>)value, ObjectType, settings));
