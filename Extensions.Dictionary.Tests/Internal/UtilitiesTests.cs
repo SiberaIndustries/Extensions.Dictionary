@@ -90,7 +90,7 @@ namespace Extensions.Dictionary.Tests.Internal
             Assert.Equal(bigInt, Utilities.ToBigInteger(42.0));
             Assert.Equal(bigInt, Utilities.ToBigInteger(new decimal(42)));
             Assert.Equal(bigInt, Utilities.ToBigInteger(42));
-            Assert.Equal(bigInt, Utilities.ToBigInteger(42l));
+            Assert.Equal(bigInt, Utilities.ToBigInteger(42L));
             Assert.Equal(bigInt, Utilities.ToBigInteger((uint)42));
             Assert.Equal(bigInt, Utilities.ToBigInteger((ulong)42));
             Assert.Equal(bigInt, Utilities.ToBigInteger(bigInt.ToByteArray()));
