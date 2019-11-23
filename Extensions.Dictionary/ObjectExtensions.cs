@@ -21,8 +21,7 @@ namespace Extensions.Dictionary
         internal static IDictionary<string, object?> ToDictionaryInternal(this object instance, ConverterSettings settings)
         {
             var instanceType = instance.GetType();
-            var converter = settings.GetMatchingConverter(instanceType);
-            if (converter != null)
+            if (settings.TryGetMatchingConverter(instanceType, out MemberConverter converter))
             {
                 return (IDictionary<string, object?>)converter.Convert(instance, settings);
             }
@@ -40,8 +39,7 @@ namespace Extensions.Dictionary
                     continue;
                 }
 
-                converter = settings.GetMatchingConverter(value.GetType());
-                if (converter != null)
+                if (settings.TryGetMatchingConverter(value.GetType(), out converter))
                 {
                     resultDictionary[key] = converter.Convert(value, settings);
                     continue;

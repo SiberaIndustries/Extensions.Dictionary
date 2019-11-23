@@ -34,18 +34,21 @@ namespace Extensions.Dictionary
             UriConverter.Default,
         };
 
-        internal MemberConverter? GetMatchingConverter(Type objectType)
+#pragma warning disable CS8625
+        internal bool TryGetMatchingConverter(Type objectType, out MemberConverter converter)
         {
             for (int i = 0; i < Converters.Count; i++)
             {
-                var candidate = Converters[i];
-                if (candidate.CanConvert(objectType))
+                converter = Converters[i];
+                if (converter.CanConvert(objectType))
                 {
-                    return candidate;
+                    return true;
                 }
             }
 
-            return null;
+            converter = null;
+            return false;
         }
+#pragma warning restore CS8625
     }
 }

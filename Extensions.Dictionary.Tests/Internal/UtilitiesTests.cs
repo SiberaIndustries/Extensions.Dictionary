@@ -133,5 +133,17 @@ namespace Extensions.Dictionary.Tests.Internal
             Assert.IsType<int>(result);
             Assert.Equal(42, result);
         }
+
+        [Fact]
+        public void TryGetUnderlyingType_Success()
+        {
+            var result = typeof(float).TryGetUnderlyingType(out Type t);
+            Assert.False(result);
+            Assert.Null(t);
+
+            result = typeof(float?).TryGetUnderlyingType(out t);
+            Assert.True(result);
+            Assert.NotNull(t);
+        }
     }
 }

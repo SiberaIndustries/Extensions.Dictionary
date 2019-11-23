@@ -144,6 +144,12 @@ namespace Extensions.Dictionary.Internal
             }
         }
 
+        public static bool TryGetUnderlyingType(this Type type, out Type underlyingType)
+        {
+            underlyingType = Nullable.GetUnderlyingType(type);
+            return underlyingType != null;
+        }
+
         public static PrimitiveTypeCode GetTypeCode(Type type)
         {
             if (TypeCodeMap.TryGetValue(type, out PrimitiveTypeCode typeCode))
@@ -155,8 +161,7 @@ namespace Extensions.Dictionary.Internal
                 return GetTypeCode(Enum.GetUnderlyingType(type));
             }
 
-            var nonNullable = Nullable.GetUnderlyingType(type);
-            if (nonNullable != null && nonNullable.IsEnum)
+            if (type.TryGetUnderlyingType(out Type nonNullable) && nonNullable.IsEnum)
             {
                 var nullableUnderlyingType = typeof(Nullable<>).MakeGenericType(new[] { Enum.GetUnderlyingType(nonNullable) });
                 return GetTypeCode(nullableUnderlyingType);
@@ -184,8 +189,7 @@ namespace Extensions.Dictionary.Internal
                 throw new ArgumentNullException(nameof(initialValue));
             }
 
-            var nonNullableType = Nullable.GetUnderlyingType(targetType);
-            if (nonNullableType != null)
+            if (targetType.TryGetUnderlyingType(out Type nonNullableType))
             {
                 targetType = nonNullableType;
             }

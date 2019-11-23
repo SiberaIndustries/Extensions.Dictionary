@@ -33,8 +33,7 @@ namespace Extensions.Dictionary.Tests.Converter
         {
             public override IDictionary<string, object> ToDictionary(CustomVector value, ConverterSettings settings)
             {
-                var converter = settings.GetMatchingConverter(typeof(float?));
-                if (converter != null)
+                if (settings.TryGetMatchingConverter(typeof(float?), out MemberConverter converter))
                 {
                     return new Dictionary<string, object>(3)
                     {
@@ -54,8 +53,7 @@ namespace Extensions.Dictionary.Tests.Converter
 
             public override CustomVector ToInstance(IDictionary<string, object> value, ConverterSettings settings)
             {
-                var converter = settings.GetMatchingConverter(typeof(float?));
-                if (converter != null)
+                if (settings.TryGetMatchingConverter(typeof(float?), out MemberConverter converter))
                 {
                     return new CustomVector
                     {
