@@ -22,7 +22,7 @@ namespace Extensions.Dictionary
 
         public DateValueHandling DateHandling { get; set; }
 
-        public IList<MemberConverter> Converters { get; private set; } = new MemberConverter[]
+        public IList<MemberConverter> Converters { get; private set; } = new List<MemberConverter>
         {
             DefaultDictionaryConverter.Default,
             DefaultEnumerableConverter.Default,

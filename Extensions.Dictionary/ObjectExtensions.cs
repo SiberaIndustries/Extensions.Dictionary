@@ -20,8 +20,15 @@ namespace Extensions.Dictionary
 
         internal static IDictionary<string, object?> ToDictionaryInternal(this object instance, ConverterSettings settings)
         {
+            var instanceType = instance.GetType();
+            var converter = settings.GetMatchingConverter(instanceType);
+            if (converter != null)
+            {
+                return (IDictionary<string, object?>)converter.ToDictionary(instance, settings);
+            }
+
             var resolver = settings.ResolverInternal;
-            var members = resolver.GetMemberInfos(instance.GetType());
+            var members = resolver.GetMemberInfos(instanceType);
             var resultDictionary = new Dictionary<string, object?>(members.Length);
             foreach (var member in members)
             {
@@ -33,7 +40,7 @@ namespace Extensions.Dictionary
                     continue;
                 }
 
-                var converter = settings.GetMatchingConverter(value.GetType());
+                converter = settings.GetMatchingConverter(value.GetType());
                 if (converter != null)
                 {
                     resultDictionary[key] = converter.ToDictionary(value, settings);
