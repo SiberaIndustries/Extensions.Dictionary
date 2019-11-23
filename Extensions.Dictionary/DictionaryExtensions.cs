@@ -49,22 +49,23 @@ namespace Extensions.Dictionary
                 var value = element.Value;
                 var memberType = member.GetMemberType();
 
-                // Try to use matching converter
-                if (value != null && settings.TryGetMatchingConverter(memberType, out converter))
+                if (value != null)
                 {
-                    member.SetValue(instance, converter.ConvertBack((IDictionary<string, object?>)value, ObjectType, settings));
-                    continue;
-                }
+                    // Try to use matching converter
+                    if (settings.TryGetMatchingConverter(memberType, out converter))
+                    {
+                        member.SetValue(instance, converter.ConvertBack((IDictionary<string, object?>)value, ObjectType, settings));
+                        continue;
+                    }
 
-                // Try to convert non nullable values
-                if (value != null && value.TryConvertValue(memberType, settings, out object? conValue))
-                {
-                    member.SetValue(instance, conValue);
-                    continue;
-                }
-
-                // Assign null if underlying type allows nullables
-                if (value == null && memberType.TryGetUnderlyingType(out Type _))
+                    // Try to convert non nullable values
+                    if (value.TryConvertValue(memberType, settings, out object? conValue))
+                    {
+                        member.SetValue(instance, conValue);
+                        continue;
+                    }
+                }   // Assign null if value is null and the underlying member type allows nullables
+                else if (memberType.TryGetUnderlyingType(out Type _))
                 {
                     member.SetValue(instance, null);
                     continue;
