@@ -9,7 +9,6 @@ namespace Extensions.Dictionary
 {
     public static class DictionaryExtensions
     {
-        private static readonly Type ObjectType = typeof(object);
         private static readonly Type GenericDictionaryType = typeof(Dictionary<,>);
         private static readonly Type GenericDictionaryInterfaceType = typeof(IDictionary<,>);
         private static readonly Type EnumerableType = typeof(IEnumerable);
