@@ -173,7 +173,7 @@ namespace Extensions.Dictionary.Internal
         public static object? ConVal(this object? initialValue, Type targetType, ConverterSettings settings) =>
             TryConvertValue(initialValue, targetType, settings, out object? value)
                 ? value
-                : throw new InvalidOperationException();
+                : throw new InvalidOperationException($"Cannot convert {initialValue?.GetType().Name} to {targetType.Name}");
 
         public static T ConVal<T>(this object? initialValue, ConverterSettings settings)
             where T : struct
@@ -384,7 +384,7 @@ namespace Extensions.Dictionary.Internal
                 return new BigInteger(bytes);
             }
 
-            throw new InvalidCastException();
+            throw new InvalidCastException($"Cannot cast type {value?.GetType().Name} to {nameof(BigInteger)}");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "HAA0601:Value type to reference type conversion causing boxing allocation", Justification = "Explicit casts required")]

@@ -29,7 +29,7 @@ namespace Extensions.Dictionary
         {
             if (settings.TryGetMatchingConverter(type, out MemberConverter converter))
             {
-                return converter.ConvertBack(dictionary, type, settings) ?? throw new InvalidOperationException();
+                return converter.ConvertBack(dictionary, type, settings) ?? throw new InvalidOperationException($"Cannot convert {dictionary.GetType().Name} to {type.Name}");
             }
 
             var instance = Activator.CreateInstance(type);
@@ -48,22 +48,23 @@ namespace Extensions.Dictionary
                 var value = element.Value;
                 var memberType = member.GetMemberType();
 
-                // Try to use matching converter
-                if (value != null && settings.TryGetMatchingConverter(memberType, out converter))
+                if (value != null)
                 {
-                    member.SetValue(instance, converter.ConvertBack(value, memberType, settings));
-                    continue;
-                }
+                    // Try to convert non nullable values
+                    if (value.TryConvertValue(memberType, settings, out object? conValue))
+                    {
+                        member.SetValue(instance, conValue);
+                        continue;
+                    }
 
-                // Try to convert non nullable values
-                if (value != null && value.TryConvertValue(memberType, settings, out object? conValue))
-                {
-                    member.SetValue(instance, conValue);
-                    continue;
-                }
-
-                // Assign null if member type allows null assignment
-                if (value == null && (!memberType.IsValueType || memberType.TryGetNonNullableType(out Type _)))
+                    // Try to use matching converter
+                    if (settings.TryGetMatchingConverter(memberType, out converter))
+                    {
+                        member.SetValue(instance, converter.ConvertBack(value, memberType, settings));
+                        continue;
+                    }
+                }   // Assign null if member type allows null assignment
+                else if (!memberType.IsValueType || memberType.TryGetNonNullableType(out Type _))
                 {
                     member.SetValue(instance, null);
                     continue;
@@ -83,7 +84,7 @@ namespace Extensions.Dictionary
                     continue;
                 }
 
-                throw new NotSupportedException();
+                throw new NotSupportedException($"'{value?.ToString()}' cannot be assigned to '{member.Name}' or cannot converted to '{memberType.Name}'");
             }
 
             return instance;
