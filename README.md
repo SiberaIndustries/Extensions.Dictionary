@@ -70,7 +70,7 @@ public class Vector3Converter : MemberConverter<Vector3>
 {
     public override IDictionary<string, object> ToDictionary(Vector3 value, ConverterSettings settings)
     {
-        return new Dictionary<string, object>
+        return new Dictionary<string, object>(3)
         {
             { nameof(Vector3.X), value.X },
             { nameof(Vector3.Y), value.Y },
@@ -82,9 +82,9 @@ public class Vector3Converter : MemberConverter<Vector3>
     {
         return new Vector3
         {
-            X = float.Parse(value[nameof(Vector3.X)]?.ToString(), CultureInfo.InvariantCulture),
-            Y = float.Parse(value[nameof(Vector3.Y)]?.ToString(), CultureInfo.InvariantCulture),
-            Z = float.Parse(value[nameof(Vector3.Z)]?.ToString(), CultureInfo.InvariantCulture),
+            X = float.Parse(value[nameof(Vector3.X)]?.ToString(), settings.Culture),
+            Y = float.Parse(value[nameof(Vector3.Y)]?.ToString(), settings.Culture),
+            Z = float.Parse(value[nameof(Vector3.Z)]?.ToString(), settings.Culture),
         };
     }
 }
@@ -95,7 +95,7 @@ public class Vector3Converter : MemberConverter<Vector3>
 var plane = new Plane(1f, 1f, 1f, .1f);
 
 var settings = new ConverterSettings();
-settings.Converters.Add(new Vecto3Converter());
+settings.Converters.Add(new Vector3Converter());
 
 var dict = plane.ToDictionary(settings);
 ```

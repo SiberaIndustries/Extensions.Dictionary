@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Extensions.Dictionary
+namespace Extensions.Dictionary.Internal
 {
     internal static class MemberInfoExtensions
     {
@@ -38,16 +38,5 @@ namespace Extensions.Dictionary
 
         public static string GetName(this MemberInfo memberInfo, ISerializerResolver serializerResolver) =>
             serializerResolver.GetMemberName(memberInfo);
-
-        public static bool IsSimpleType(this MemberInfo memberInfo)
-        {
-            return memberInfo switch
-            {
-                PropertyInfo propertyInfo => propertyInfo.PropertyType.IsSimpleType(),
-                FieldInfo fieldInfo => fieldInfo.FieldType.IsSimpleType(),
-                null => throw new ArgumentNullException(nameof(memberInfo)),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
-            };
-        }
     }
 }

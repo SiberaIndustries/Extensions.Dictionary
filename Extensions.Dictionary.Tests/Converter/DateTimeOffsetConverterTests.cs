@@ -10,6 +10,14 @@ namespace Extensions.Dictionary.Tests.Converter
     {
         private readonly ConverterSettings settings = new ConverterSettings();
         private readonly DateTimeOffsetConverter converter = new DateTimeOffsetConverter();
+        private readonly IDictionary<string, object> expectedMinimum = new Dictionary<string, object>
+        {
+            { nameof(DateTimeOffset.Ticks), 630823790450060000L },
+            { nameof(DateTimeOffset.Offset), new Dictionary<string, object>
+                {
+                    { nameof(TimeSpan.Ticks), 4200000000L },
+                } },
+        };
         private readonly IDictionary<string, object> expected = new Dictionary<string, object>
         {
             { nameof(DateTimeOffset.Year), 2000 },
@@ -31,24 +39,31 @@ namespace Extensions.Dictionary.Tests.Converter
                 } },
         };
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void ConvertToDateTimeOffset_Success(bool useTicks)
+        [Fact]
+        public void ConvertToDateTimeOffset_Success()
         {
-            var date = useTicks
-                ? new DateTimeOffset(630823790450060000L, TimeSpan.FromMinutes(7))
-                : new DateTimeOffset(2000, 1, 2, 3, 4, 5, 6, TimeSpan.FromMinutes(7));
+            settings.DateHandling = DateValueHandling.Default;
+            var date = new DateTimeOffset(2000, 1, 2, 3, 4, 5, 6, TimeSpan.FromMinutes(7));
             Assert.True(converter.CanConvert(date.GetType()));
 
             var dict = converter.ToDictionary(date, settings);
             Assert.Equal(expected, dict);
 
-            if (!useTicks)
-            {
-                dict.Remove(nameof(DateTime.Ticks));
-                ((IDictionary)dict[nameof(DateTimeOffset.Offset)]).Remove(nameof(TimeSpan.Ticks));
-            }
+            dict.Remove(nameof(DateTime.Ticks));
+            ((IDictionary)dict[nameof(DateTimeOffset.Offset)]).Remove(nameof(TimeSpan.Ticks));
+            var result = converter.ToInstance(dict, settings);
+            Assert.Equal(date, result);
+        }
+
+        [Fact]
+        public void ConvertToMinimumDateTimeOffset_Success()
+        {
+            settings.DateHandling = DateValueHandling.Minimum;
+            var date = new DateTimeOffset(630823790450060000L, TimeSpan.FromMinutes(7));
+            Assert.True(converter.CanConvert(date.GetType()));
+
+            var dict = converter.ToDictionary(date, settings);
+            Assert.Equal(expectedMinimum, dict);
 
             var result = converter.ToInstance(dict, settings);
             Assert.Equal(date, result);

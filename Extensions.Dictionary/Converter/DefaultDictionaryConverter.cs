@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extensions.Dictionary.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,7 +9,7 @@ namespace Extensions.Dictionary.Converter
     {
         public static readonly DefaultDictionaryConverter Default = new DefaultDictionaryConverter();
 
-        public override IDictionary<string, object> ToDictionary(IDictionary value, ConverterSettings settings)
+        public override IDictionary<string, object> Convert(IDictionary value, ConverterSettings settings)
         {
             if (value is IDictionary<string, object> dictionary)
             {
@@ -29,16 +30,16 @@ namespace Extensions.Dictionary.Converter
                 {
                     var keyString = key.ToString();
                     var keyValue = value[key];
-                    dictionary[keyString] = keyValue.IsSimpleType()
+                    dictionary[keyString] = keyValue.GetType().IsSimpleType()
                         ? keyValue
-                        : ToDictionary(dictionary, settings);
+                        : Convert(dictionary, settings);
                 }
             }
 
             return dictionary;
         }
 
-        public override IDictionary ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
+        public override IDictionary ConvertBack(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
         {
             if (genericTypes[1] != typeof(object))
             {

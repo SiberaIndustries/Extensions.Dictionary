@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Extensions.Dictionary
 {
-    public abstract class MemberConverter<T> : MemberConverter
+    public abstract class NativeConverter<T> : MemberConverter
     {
         public sealed override bool CanConvert(Type objectType)
         {
@@ -17,10 +16,10 @@ namespace Extensions.Dictionary
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return ToDictionary((T)value, settings);
+            return Convert((T)value, settings);
         }
 
-        public abstract IDictionary<string, object> ToDictionary(T value, ConverterSettings settings);
+        public abstract object Convert(T value, ConverterSettings settings);
 
         public sealed override object? ConvertBack(object value, Type type, ConverterSettings settings)
         {
@@ -29,9 +28,9 @@ namespace Extensions.Dictionary
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return ToInstance((IDictionary<string, object?>)value, settings) as object;
+            return ConvertBack(value, settings) as object;
         }
 
-        public abstract T ToInstance(IDictionary<string, object?> value, ConverterSettings settings);
+        public abstract T ConvertBack(object value, ConverterSettings settings);
     }
 }

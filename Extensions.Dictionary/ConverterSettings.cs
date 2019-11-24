@@ -2,6 +2,7 @@
 using Extensions.Dictionary.Resolver;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Extensions.Dictionary
 {
@@ -15,26 +16,39 @@ namespace Extensions.Dictionary
             set => ResolverInternal = value ?? DefaultResolver.Instance;
         }
 
-        public IList<MemberConverter> Converters { get; private set; } = new MemberConverter[]
+        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+
+        public EnumValueHandling EnumHandling { get; set; }
+
+        public DateValueHandling DateHandling { get; set; }
+
+        public IList<MemberConverter> Converters { get; private set; } = new List<MemberConverter>
         {
             DefaultDictionaryConverter.Default,
             DefaultEnumerableConverter.Default,
             DateTimeOffsetConverter.Default,
-            DateTimeConverter.Default
+            DateTimeConverter.Default,
+            TimespanConverter.Default,
+            VersionConverter.Default,
+            GuidConverter.Default,
+            UriConverter.Default,
         };
 
-        internal MemberConverter? GetMatchingConverter(Type objectType)
+#pragma warning disable CS8625
+        internal bool TryGetMatchingConverter(Type objectType, out MemberConverter converter)
         {
             for (int i = 0; i < Converters.Count; i++)
             {
-                var candidate = Converters[i];
-                if (candidate.CanConvert(objectType))
+                converter = Converters[i];
+                if (converter.CanConvert(objectType))
                 {
-                    return candidate;
+                    return true;
                 }
             }
 
-            return null;
+            converter = null;
+            return false;
         }
+#pragma warning restore CS8625
     }
 }

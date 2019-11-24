@@ -1,56 +1,12 @@
-﻿using Extensions.Dictionary.Resolver;
-using System;
+﻿using Extensions.Dictionary.Internal;
+using Extensions.Dictionary.Resolver;
 using Xunit;
 using static Extensions.Dictionary.Tests.MemberInfoDummy;
 
-namespace Extensions.Dictionary.Tests
+namespace Extensions.Dictionary.Tests.Internal
 {
     public class MemberInfoExtensionsTests : TestFixture
     {
-        [Fact]
-        public void IsSimpleTypeOnUnkownMembers_ArgumentNullException()
-        {
-            var dummyType = typeof(MemberInfoDummy);
-
-            var invalidPropInfo = dummyType.GetProperty("InvalidPropertyName");
-            var invalidFieldInfo = dummyType.GetField("InvalidFieldName");
-
-            var ex1 = Assert.Throws<ArgumentNullException>(() => invalidPropInfo.IsSimpleType());
-            Assert.Equal("memberInfo", ex1.ParamName);
-
-            var ex2 = Assert.Throws<ArgumentNullException>(() => invalidFieldInfo.IsSimpleType());
-            Assert.Equal("memberInfo", ex2.ParamName);
-        }
-
-        [Fact]
-        public void IsSimpleTypeOnUnkownMemberTypes_NotSupportedException()
-        {
-            var dummyType = typeof(MemberInfoDummy);
-
-            var invalidPropInfo = dummyType.GetMethod(nameof(MemberInfoDummy.Method1));
-
-            var ex = Assert.Throws<NotSupportedException>(() => invalidPropInfo.IsSimpleType());
-            Assert.Equal("MemberType MemberInfoDummy.Method1 is not a property or field", ex.Message);
-        }
-
-        [Fact]
-        public void IsSimpleType_Success()
-        {
-            var dummyType = typeof(MemberInfoDummy);
-
-            var value1Info = dummyType.GetProperty(nameof(MemberInfoDummy.Value1));
-            var value2Info = dummyType.GetField(nameof(MemberInfoDummy.Value2));
-            var value3Info = dummyType.GetProperty(nameof(MemberInfoDummy.Value3));
-            var value4Info = dummyType.GetProperty(nameof(MemberInfoDummy.Value4));
-            var subDummyInfo = dummyType.GetProperty(nameof(MemberInfoDummy.SubDummy));
-
-            Assert.True(value1Info.IsSimpleType());
-            Assert.True(value2Info.IsSimpleType());
-            Assert.True(value3Info.IsSimpleType());
-            Assert.True(value4Info.IsSimpleType());
-            Assert.False(subDummyInfo.IsSimpleType());
-        }
-
         [Fact]
         public void GetNameWithDefaultResolver_Success()
         {

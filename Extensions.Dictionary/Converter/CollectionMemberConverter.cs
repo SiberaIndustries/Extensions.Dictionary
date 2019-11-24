@@ -12,24 +12,24 @@ namespace Extensions.Dictionary.Converter
             return typeof(T).IsAssignableFrom(objectType);
         }
 
-        public sealed override IDictionary<string, object> ToDictionary(object? value, ConverterSettings settings)
+        public sealed override object Convert(object? value, ConverterSettings settings)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return ToDictionary((T)value, settings);
+            return Convert((T)value, settings);
         }
 
-        public abstract IDictionary<string, object> ToDictionary(T value, ConverterSettings settings);
+        public abstract IDictionary<string, object> Convert(T value, ConverterSettings settings);
 
-        public sealed override object? ToInstance(IDictionary<string, object?> value, Type type, ConverterSettings settings)
+        public sealed override object? ConvertBack(object value, Type type, ConverterSettings settings)
         {
             GenericTypes[1] = type;
-            return ToInstance(value, GenericTypes, settings) as object;
+            return ConvertBack((IDictionary<string, object?>)value, GenericTypes, settings) as object;
         }
 
-        public abstract T ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings);
+        public abstract T ConvertBack(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extensions.Dictionary.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,7 +10,7 @@ namespace Extensions.Dictionary.Converter
     {
         public static readonly DefaultEnumerableConverter Default = new DefaultEnumerableConverter();
 
-        public override IDictionary<string, object> ToDictionary(ICollection value, ConverterSettings settings)
+        public override IDictionary<string, object> Convert(ICollection value, ConverterSettings settings)
         {
             var valueType = value.GetType();
             var itemType = valueType.IsArray ? valueType : valueType.GetGenericArguments()[0];
@@ -27,7 +28,7 @@ namespace Extensions.Dictionary.Converter
                 int i = 0;
                 foreach (var element in value)
                 {
-                    dictionary[i++.ToString(CultureInfo.InvariantCulture)] = element.IsSimpleType()
+                    dictionary[i++.ToString(CultureInfo.InvariantCulture)] = element.GetType().IsSimpleType()
                         ? element
                         : element.ToDictionaryInternal(settings);
                 }
@@ -36,9 +37,19 @@ namespace Extensions.Dictionary.Converter
             return dictionary;
         }
 
-        public override ICollection ToInstance(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
+        public override ICollection ConvertBack(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
         {
-            var array = Array.CreateInstance(genericTypes[1], value.Count);
+            var elementType = genericTypes[1];
+            if (elementType.IsGenericType)
+            {
+                elementType = elementType.GetGenericArguments()[0];
+            }
+            else if (elementType.IsArray)
+            {
+                elementType = elementType.GetElementType();
+            }
+
+            var array = Array.CreateInstance(elementType, value.Count);
             int i = 0;
             foreach (var item in (Dictionary<string, object?>.ValueCollection)value.Values)
             {

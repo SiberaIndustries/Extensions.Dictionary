@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Extensions.Dictionary.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Reflection;
 

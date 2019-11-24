@@ -20,23 +20,25 @@ namespace Extensions.Dictionary.Tests
 
         public object GetMemberValue(MemberInfo memberInfo, object instance)
         {
-            var convertertype = memberInfo.GetCustomAttribute<JsonConverterAttribute>();
-            if (convertertype != null)
-            {
-                var converter = (JsonConverter)Activator.CreateInstance(convertertype.ConverterType);
-                using var sw = new StringWriter();
-                using var jw = new JsonTextWriter(sw);
-                converter.WriteJson(jw, memberInfo.GetValue(instance, this), new JsonSerializer());
-                return sw.ToString().TrimStart('"').TrimEnd('"');
-            }
-
-            return memberInfo?.MemberType switch
+            var value = memberInfo?.MemberType switch
             {
                 MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(instance),
                 MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(instance),
                 null => throw new ArgumentNullException(nameof(memberInfo)),
                 _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
             };
+
+            var convertertype = memberInfo.GetCustomAttribute<JsonConverterAttribute>();
+            if (convertertype != null)
+            {
+                var converter = (JsonConverter)Activator.CreateInstance(convertertype.ConverterType);
+                using var sw = new StringWriter();
+                using var jw = new JsonTextWriter(sw);
+                converter.WriteJson(jw, value, new JsonSerializer());
+                return sw.ToString().TrimStart('"').TrimEnd('"');
+            }
+
+            return value;
         }
 
         public MemberInfo[] GetMemberInfos(Type type) =>
