@@ -135,13 +135,13 @@ namespace Extensions.Dictionary.Tests.Internal
         }
 
         [Fact]
-        public void TryGetUnderlyingType_Success()
+        public void TryGetNonNullableType_Success()
         {
-            var result = typeof(float).TryGetUnderlyingType(out Type t);
+            var result = typeof(float).TryGetNonNullableType(out Type t);
             Assert.False(result);
             Assert.Null(t);
 
-            result = typeof(float?).TryGetUnderlyingType(out t);
+            result = typeof(float?).TryGetNonNullableType(out t);
             Assert.True(result);
             Assert.NotNull(t);
         }

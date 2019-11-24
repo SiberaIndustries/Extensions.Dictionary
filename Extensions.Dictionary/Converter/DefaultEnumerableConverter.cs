@@ -39,7 +39,17 @@ namespace Extensions.Dictionary.Converter
 
         public override ICollection ConvertBack(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings)
         {
-            var array = Array.CreateInstance(genericTypes[1], value.Count);
+            var elementType = genericTypes[1];
+            if (elementType.IsGenericType)
+            {
+                elementType = elementType.GetGenericArguments()[0];
+            }
+            else if (elementType.IsArray)
+            {
+                elementType = elementType.GetElementType();
+            }
+
+            var array = Array.CreateInstance(elementType, value.Count);
             int i = 0;
             foreach (var item in (Dictionary<string, object?>.ValueCollection)value.Values)
             {

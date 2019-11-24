@@ -52,7 +52,7 @@ namespace Extensions.Dictionary
                 // Try to use matching converter
                 if (value != null && settings.TryGetMatchingConverter(memberType, out converter))
                 {
-                    member.SetValue(instance, converter.ConvertBack((IDictionary<string, object?>)value, ObjectType, settings));
+                    member.SetValue(instance, converter.ConvertBack(value, memberType, settings));
                     continue;
                 }
 
@@ -63,8 +63,8 @@ namespace Extensions.Dictionary
                     continue;
                 }
 
-                // Assign null if underlying type allows nullables
-                if (value == null && memberType.TryGetUnderlyingType(out Type _))
+                // Assign null if member type allows null assignment
+                if (value == null && (!memberType.IsValueType || memberType.TryGetNonNullableType(out Type _)))
                 {
                     member.SetValue(instance, null);
                     continue;
