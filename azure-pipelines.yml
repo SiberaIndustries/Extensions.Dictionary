@@ -11,14 +11,16 @@ pool:
 
 steps:
 - task: PowerShell@2
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
   inputs:
     targetType: 'inline'
     script: |
-      set DOTNET_CLI_TELEMETRY_OPTOUT=1
-
       dotnet build -c release
       dotnet pack -c release
 - task: PowerShell@2
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
   inputs:
     targetType: 'inline'
     script: |
