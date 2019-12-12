@@ -14,8 +14,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      DOTNET_CLI_TELEMETRY_OPTOUT=1
-      
+      set DOTNET_CLI_TELEMETRY_OPTOUT=1
+
       dotnet build -c release
       dotnet pack -c release
 - task: PowerShell@2
