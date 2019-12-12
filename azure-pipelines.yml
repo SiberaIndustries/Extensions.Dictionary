@@ -27,6 +27,6 @@ steps:
       $file = "Extensions.Dictionary\bin\Release\netstandard2.0\Extensions.Dictionary.dll"
       $version = (Get-Command ([System.IO.Path]::Combine($pwd.Path, $file))).Version.ToString(3)
       
-      dotnet sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:"sonar.host.url=https://sonarcloud.io" /v:"$version"  /d:sonar.login="$(TOKEN)"
+      dotnet sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:"sonar.host.url=https://sonarcloud.io" /v:"$version" /d:sonar.login="$(TOKEN)"
       dotnet test -c release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
       dotnet sonarscanner end /d:sonar.login="$(TOKEN)"
