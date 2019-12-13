@@ -27,7 +27,7 @@ namespace Extensions.Dictionary
 
         internal static object ToInstanceInternal(this Dictionary<string, object?> dictionary, Type type, ConverterSettings settings)
         {
-            if (settings.TryGetMatchingConverter(type, out MemberConverter converter))
+            if (settings.TryGetMatchingConverter(type, out MemberConverter? converter))
             {
                 return converter.ConvertBack(dictionary, type, settings) ?? throw new InvalidOperationException($"Cannot convert {dictionary.GetType().Name} to {type.Name}");
             }

@@ -2,6 +2,7 @@
 using Extensions.Dictionary.Resolver;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Extensions.Dictionary
@@ -34,8 +35,7 @@ namespace Extensions.Dictionary
             UriConverter.Default,
         };
 
-#pragma warning disable CS8625
-        internal bool TryGetMatchingConverter(Type objectType, out MemberConverter converter)
+        internal bool TryGetMatchingConverter(Type objectType, [NotNullWhen(returnValue: true)]out MemberConverter? converter)
         {
             for (int i = 0; i < Converters.Count; i++)
             {
@@ -49,6 +49,5 @@ namespace Extensions.Dictionary
             converter = null;
             return false;
         }
-#pragma warning restore CS8625
     }
 }
