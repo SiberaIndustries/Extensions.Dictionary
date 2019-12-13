@@ -1,0 +1,32 @@
+trigger:
+- master
+- develop
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: PowerShell@2
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  inputs:
+    targetType: 'inline'
+    script: |
+      dotnet build -c release
+      dotnet pack -c release
+- task: PowerShell@2
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  inputs:
+    targetType: 'inline'
+    script: |
+      dotnet tool install -g dotnet-retire
+      dotnet retire -p Extensions.Dictionary
+
+      dotnet tool install -g dotnet-sonarscanner
+      $file = "Extensions.Dictionary\bin\Release\netstandard2.0\Extensions.Dictionary.dll"
+      $version = (Get-Command ([System.IO.Path]::Combine($pwd.Path, $file))).Version.ToString(3)
+      
+      dotnet sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:"sonar.host.url=https://sonarcloud.io" /v:"$version" /d:sonar.login="$(TOKEN)"
+      dotnet test -c release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      dotnet sonarscanner end /d:sonar.login="$(TOKEN)"
