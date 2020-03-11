@@ -15,7 +15,7 @@ namespace Extensions.Dictionary.Benchmarks
         public int N;
 
         private readonly DictionaryDummy dummy = new DictionaryDummy();
-        private readonly MemberInfo memberInfo = typeof(DictionaryDummy).GetProperty(nameof(DictionaryDummy.String01));
+        private readonly MemberInfo memberInfo = typeof(DictionaryDummy).GetProperty(nameof(DictionaryDummy.String01))!;
 
         [Benchmark(Baseline = true)]
         public object? Cast()
