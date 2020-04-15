@@ -8,7 +8,7 @@ namespace Extensions.Dictionary.Benchmarks
     [MemoryDiagnoser]
     [RankColumn]
     [BenchmarkCategory(nameof(MemberInfoExtensions))]
-    [DisassemblyDiagnoser(true, false, true, false, 1, true)]
+    [DisassemblyDiagnoser(1, true, false, true, false, false, true)]
     public class MemberInfoTypeCastBench
     {
         [Params(1000)]
