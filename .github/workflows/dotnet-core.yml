@@ -1,0 +1,102 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '15'
+          java-package: jre
+      
+      - name: Cache dotnet tools
+        id: cache-dotnet-tools
+        uses: actions/cache@v2
+        with:
+          path: .\.tools
+          key: ${{ runner.os }}-dotnet-tools
+      
+      - name: Install dotnet tools
+        if: steps.cache-dotnet-tools.outputs.cache-hit != 'true'
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+          NUGET_XMLDOC_MODE: skip
+        shell: powershell
+        run: |
+          New-Item -Path .\.tools -ItemType Directory -Force
+          dotnet tool update dotnet-retire --tool-path .\.tools
+          dotnet tool update dotnet-sonarscanner --tool-path .\.tools
+      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+      
+#      - name: Cache NuGet-Packages
+#        id: cache-nuget-packages
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.nuget/packages
+#          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+#      - name: Restore Packages
+#        if: steps.cache-nuget-packages.outputs.cache-hit != 'true'
+#        env:
+#          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+#          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+#          NUGET_XMLDOC_MODE: skip
+#        run: dotnet restore
+        
+      - name: Build
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+          NUGET_XMLDOC_MODE: skip
+        run: dotnet build -c release --nologo
+        
+      - name: Check CVEs
+        shell: powershell
+        run: |
+          .\.tools\dotnet-retire -p Extensions.Dictionary
+      
+      - name: Test and analyze
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+          NUGET_XMLDOC_MODE: skip
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          $file = "Extensions.Dictionary\bin\Release\netstandard2.0\Extensions.Dictionary.dll"
+          $version = (Get-Command ([System.IO.Path]::Combine($pwd.Path, $file))).Version.ToString(3)
+          
+          .\.tools\dotnet-sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:sonar.host.url="https://sonarcloud.io" /v:"$version" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet test -c release --no-restore --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          .\.tools\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Create NuGet package
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+          NUGET_XMLDOC_MODE: skip
+        run: dotnet pack -o . -c release --no-restore --no-build --nologo
+
+      - name: Upload NuGet-Package
+        uses: actions/upload-artifact@v2
+        with:
+          name: NuGet-Packages
+          path: ./*.nupkg
