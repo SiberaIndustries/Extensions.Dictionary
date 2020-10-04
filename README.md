@@ -1,8 +1,7 @@
 # Extensions.Dictionary
 
 [![NuGet](https://img.shields.io/nuget/v/Extensions.Dictionary.svg)](https://www.nuget.org/packages/Extensions.Dictionary)
-[![Azure DevOps Build Status](https://dev.azure.com/SiberaIndustries/Extensions.Dictionary/_apis/build/status/SiberaIndustries.Extensions.Dictionary?branchName=master)](https://dev.azure.com/SiberaIndustries/Extensions.Dictionary/_build/latest?definitionId=1&branchName=master)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/o8eyfg4065t5qii9/branch/master?svg=true)](https://ci.appveyor.com/project/SiberaIndustries/extensions-dictionary/branch/master)
+[![.NET Core](https://github.com/SiberaIndustries/Extensions.Dictionary/workflows/.NET%20Core/badge.svg)](https://github.com/SiberaIndustries/Extensions.Dictionary/actions?query=workflow%3A%22.NET+Core%22)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SiberaIndustries_Extensions.Dictionary&metric=alert_status)](https://sonarcloud.io/dashboard?id=SiberaIndustries_Extensions.Dictionary)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SiberaIndustries_Extensions.Dictionary&metric=coverage)](https://sonarcloud.io/dashboard?id=SiberaIndustries_Extensions.Dictionary)
 
