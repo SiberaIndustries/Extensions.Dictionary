@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>2.2.5</Version>
-    <AssemblyVersion>2.2.5.0</AssemblyVersion>
+    <Version>2.2.6</Version>
+    <AssemblyVersion>2.2.6.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
