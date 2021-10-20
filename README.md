@@ -42,7 +42,7 @@ var dictionary1 = person.ToDictionary();
 
 // Option 2: Same as option 1 + respect DataContract attributes (DataMember / IgnoreDataMember)
 var settings = new ConverterSettings { Resolver = new DataContractResolver() };
-var dictionary2 = person.ToDictionary(settings;
+var dictionary2 = person.ToDictionary(settings);
 
 // dictionary1: <Firstname = foo; Lastname = bar>
 // dictionary2: <Name1 = foo>
