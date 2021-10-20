@@ -9,10 +9,6 @@ namespace Extensions.Dictionary
 {
     public static class DictionaryExtensions
     {
-        private static readonly Type GenericDictionaryType = typeof(Dictionary<,>);
-        private static readonly Type GenericDictionaryInterfaceType = typeof(IDictionary<,>);
-        private static readonly Type EnumerableType = typeof(IEnumerable);
-
         /// <summary>
         /// Converts a dictionary to the specific .NET type.
         /// </summary>
@@ -102,14 +98,14 @@ namespace Extensions.Dictionary
             var dict = initialValue as IDictionary<string, object?> ?? new Dictionary<string, object?>(0);
 
             // Dictionary
-            if (GenericDictionaryInterfaceType.IsAssignableFrom(genTypeDef) || GenericDictionaryType.IsAssignableFrom(genTypeDef))
+            if (typeof(IDictionary<,>).IsAssignableFrom(genTypeDef) || typeof(Dictionary<,>).IsAssignableFrom(genTypeDef))
             {
                 value = DefaultDictionaryConverter.Default.ConvertBack(dict, memberType.GetGenericArguments()[1], settings);
                 return true;
             }
 
             // Array
-            if (EnumerableType.IsAssignableFrom(genTypeDef))
+            if (typeof(IEnumerable).IsAssignableFrom(genTypeDef))
             {
                 value = DefaultEnumerableConverter.Default.ConvertBack(dict, memberType.GetGenericArguments()[0], settings);
                 return true;

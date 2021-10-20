@@ -5,7 +5,7 @@ namespace Extensions.Dictionary.Converter
 {
     internal sealed class VersionConverter : MemberConverter<Version>
     {
-        public static readonly VersionConverter Default = new VersionConverter();
+        public static readonly VersionConverter Default = new();
 
         public override IDictionary<string, object> ToDictionary(Version value, ConverterSettings settings)
         {

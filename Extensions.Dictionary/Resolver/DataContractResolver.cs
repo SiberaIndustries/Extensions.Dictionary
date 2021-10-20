@@ -8,9 +8,6 @@ namespace Extensions.Dictionary.Resolver
 {
     public class DataContractResolver : BaseResolver
     {
-        private static readonly Type DataMemberAttrType = typeof(DataMemberAttribute);
-        private static readonly Type IgnoreDataMemberAttrType = typeof(IgnoreDataMemberAttribute);
-
         /// <summary>
         /// Gets or sets a value indicating whether to inspect the ancestors of element or not.
         /// </summary>
@@ -30,7 +27,7 @@ namespace Extensions.Dictionary.Resolver
                 return value;
             }
 
-            value = memberInfo.GetCustomAttribute(DataMemberAttrType, InspectAncestors) is DataMemberAttribute dataMember
+            value = memberInfo.GetCustomAttribute(typeof(DataMemberAttribute), InspectAncestors) is DataMemberAttribute dataMember
                 ? dataMember.Name ?? memberInfo.Name
                 : memberInfo.Name;
             return MemberInfoCache.Set(key, value);
@@ -50,7 +47,7 @@ namespace Extensions.Dictionary.Resolver
                 return value;
             }
 
-            return MemberInfoCache.Set(key, type.GetPropertiesAndFieldsFiltered(IgnoreDataMemberAttrType, InspectAncestors));
+            return MemberInfoCache.Set(key, type.GetPropertiesAndFieldsFiltered(typeof(IgnoreDataMemberAttribute), InspectAncestors));
         }
     }
 }

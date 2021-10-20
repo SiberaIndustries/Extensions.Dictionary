@@ -10,7 +10,7 @@ namespace Extensions.Dictionary.Resolver
         private static readonly IOptions<MemoryCacheOptions> CacheOptions = Options.Create(new MemoryCacheOptions());
         private bool disposed;
 
-        protected MemoryCache MemberInfoCache { get; } = new MemoryCache(CacheOptions);
+        protected MemoryCache MemberInfoCache { get; } = new(CacheOptions);
 
         /// <inheritdoc cref="ISerializerResolver" />
         public virtual string GetMemberName(MemberInfo memberInfo) => memberInfo == null

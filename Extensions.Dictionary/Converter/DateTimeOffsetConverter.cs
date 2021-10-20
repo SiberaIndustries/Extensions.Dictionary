@@ -6,7 +6,7 @@ namespace Extensions.Dictionary.Converter
 {
     internal sealed class DateTimeOffsetConverter : MemberConverter<DateTimeOffset>
     {
-        public static readonly DateTimeOffsetConverter Default = new DateTimeOffsetConverter();
+        public static readonly DateTimeOffsetConverter Default = new();
 
         public override IDictionary<string, object> ToDictionary(DateTimeOffset value, ConverterSettings settings)
         {

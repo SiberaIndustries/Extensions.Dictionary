@@ -8,7 +8,7 @@ namespace Extensions.Dictionary.Converter
 {
     internal sealed class DefaultEnumerableConverter : CollectionMemberConverter<ICollection>
     {
-        public static readonly DefaultEnumerableConverter Default = new DefaultEnumerableConverter();
+        public static readonly DefaultEnumerableConverter Default = new();
 
         public override IDictionary<string, object> Convert(ICollection value, ConverterSettings settings)
         {

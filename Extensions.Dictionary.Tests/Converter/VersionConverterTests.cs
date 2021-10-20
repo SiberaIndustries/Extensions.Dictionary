@@ -7,8 +7,8 @@ namespace Extensions.Dictionary.Tests.Converter
 {
     public class VersionConverterTests
     {
-        private readonly ConverterSettings settings = new ConverterSettings();
-        private readonly VersionConverter converter = new VersionConverter();
+        private readonly ConverterSettings settings = new();
+        private readonly VersionConverter converter = new();
 
         [Theory]
         [InlineData("1.2")]

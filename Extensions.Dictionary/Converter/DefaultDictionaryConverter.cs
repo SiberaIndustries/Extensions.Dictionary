@@ -7,7 +7,7 @@ namespace Extensions.Dictionary.Converter
 {
     internal sealed class DefaultDictionaryConverter : CollectionMemberConverter<IDictionary>
     {
-        public static readonly DefaultDictionaryConverter Default = new DefaultDictionaryConverter();
+        public static readonly DefaultDictionaryConverter Default = new();
 
         public override IDictionary<string, object> Convert(IDictionary value, ConverterSettings settings)
         {

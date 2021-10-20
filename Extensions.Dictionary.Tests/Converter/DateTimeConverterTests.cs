@@ -7,8 +7,8 @@ namespace Extensions.Dictionary.Tests.Converter
 {
     public class DateTimeConverterTests
     {
-        private readonly ConverterSettings settings = new ConverterSettings();
-        private readonly DateTimeConverter converter = new DateTimeConverter();
+        private readonly ConverterSettings settings = new();
+        private readonly DateTimeConverter converter = new();
         private readonly IDictionary<string, object> expectedMinimum = new Dictionary<string, object>
         {
             { nameof(DateTime.Ticks), 630823790450060000L },

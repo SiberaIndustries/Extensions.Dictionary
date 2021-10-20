@@ -6,7 +6,7 @@ namespace Extensions.Dictionary.Converter
 {
     internal sealed class TimespanConverter : MemberConverter<TimeSpan>
     {
-        public static readonly TimespanConverter Default = new TimespanConverter();
+        public static readonly TimespanConverter Default = new();
 
         public override IDictionary<string, object> ToDictionary(TimeSpan value, ConverterSettings settings)
         {
