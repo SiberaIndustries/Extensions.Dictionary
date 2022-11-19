@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Extensions.Dictionary
+﻿namespace Extensions.Dictionary
 {
     public abstract class MemberConverter<T> : MemberConverter
     {

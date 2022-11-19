@@ -1,7 +1,5 @@
 ﻿using Extensions.Dictionary.Internal;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Extensions.Dictionary.Converter
@@ -49,7 +47,7 @@ namespace Extensions.Dictionary.Converter
                 elementType = elementType.GetElementType();
             }
 
-            var array = Array.CreateInstance(elementType, value.Count);
+            var array = Array.CreateInstance(elementType!, value.Count);
             int i = 0;
             foreach (var item in (Dictionary<string, object?>.ValueCollection)value.Values)
             {

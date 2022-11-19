@@ -10,11 +10,11 @@ namespace Extensions.Dictionary.Benchmarks
     [BenchmarkCategory(nameof(ObjectExtensions.ToDictionary))]
     public class ConvertToDictionaryBench
     {
-        private readonly DictionaryDummy dummy = new DictionaryDummy();
-        private readonly ConverterSettings defaultResolver = new ConverterSettings { Resolver = new DefaultResolver() };
-        private readonly ConverterSettings dataContractResolver = new ConverterSettings { Resolver = new DataContractResolver() };
-        private readonly ConverterSettings dataContractResolverIgnoreAncestors = new ConverterSettings { Resolver = new DataContractResolver { InspectAncestors = false } };
-        private readonly ConverterSettings jsonResolver = new ConverterSettings { Resolver = new JsonNetSerializerResolver() };
+        private readonly DictionaryDummy dummy = new();
+        private readonly ConverterSettings defaultResolver = new() { Resolver = new DefaultResolver() };
+        private readonly ConverterSettings dataContractResolver = new() { Resolver = new DataContractResolver() };
+        private readonly ConverterSettings dataContractResolverIgnoreAncestors = new() { Resolver = new DataContractResolver { InspectAncestors = false } };
+        private readonly ConverterSettings jsonResolver = new() { Resolver = new JsonNetSerializerResolver() };
 
         [Params(1, 10, 100)]
         public int N;

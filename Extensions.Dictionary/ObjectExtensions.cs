@@ -1,6 +1,4 @@
 ﻿using Extensions.Dictionary.Internal;
-using System;
-using System.Collections.Generic;
 
 namespace Extensions.Dictionary
 {

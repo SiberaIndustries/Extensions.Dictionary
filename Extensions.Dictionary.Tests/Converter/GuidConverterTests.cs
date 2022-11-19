@@ -1,13 +1,12 @@
 ﻿using Extensions.Dictionary.Converter;
-using System;
 using Xunit;
 
 namespace Extensions.Dictionary.Tests.Converter
 {
     public class GuidConverterTests
     {
-        private readonly ConverterSettings settings = new ConverterSettings();
-        private readonly GuidConverter converter = new GuidConverter();
+        private readonly ConverterSettings settings = new();
+        private readonly GuidConverter converter = new();
 
         [Fact]
         public void ConvertToGuid_Success()

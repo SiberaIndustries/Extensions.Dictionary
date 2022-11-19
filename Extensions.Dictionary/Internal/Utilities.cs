@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 
@@ -8,7 +7,7 @@ namespace Extensions.Dictionary.Internal
 {
     internal static class Utilities
     {
-        public static readonly Dictionary<Type, PrimitiveTypeCode> TypeCodeMap = new Dictionary<Type, PrimitiveTypeCode>(40)
+        public static readonly Dictionary<Type, PrimitiveTypeCode> TypeCodeMap = new(40)
         {
             { typeof(char), PrimitiveTypeCode.Char },
             { typeof(char?), PrimitiveTypeCode.CharNullable },
@@ -144,7 +143,7 @@ namespace Extensions.Dictionary.Internal
             }
         }
 
-        public static bool TryGetNonNullableType(this Type type, out Type underlyingType)
+        public static bool TryGetNonNullableType(this Type type, [NotNullWhen(true)] out Type? underlyingType)
         {
             underlyingType = Nullable.GetUnderlyingType(type);
             return underlyingType != null;
@@ -161,7 +160,7 @@ namespace Extensions.Dictionary.Internal
                 return GetTypeCode(Enum.GetUnderlyingType(type));
             }
 
-            if (type.TryGetNonNullableType(out Type nonNullable) && nonNullable.IsEnum)
+            if (type.TryGetNonNullableType(out Type? nonNullable) && nonNullable.IsEnum)
             {
                 var nullableUnderlyingType = typeof(Nullable<>).MakeGenericType(new[] { Enum.GetUnderlyingType(nonNullable) });
                 return GetTypeCode(nullableUnderlyingType);
@@ -189,7 +188,7 @@ namespace Extensions.Dictionary.Internal
                 throw new ArgumentNullException(nameof(initialValue));
             }
 
-            if (targetType.TryGetNonNullableType(out Type nonNullableType))
+            if (targetType.TryGetNonNullableType(out Type? nonNullableType))
             {
                 targetType = nonNullableType;
             }

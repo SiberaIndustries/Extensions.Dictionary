@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Extensions.Dictionary.Converter
+﻿namespace Extensions.Dictionary.Converter
 {
     internal sealed class UriConverter : NativeConverter<Uri>
     {
@@ -13,7 +11,7 @@ namespace Extensions.Dictionary.Converter
 
         public override Uri ConvertBack(object value, ConverterSettings settings)
         {
-            return new Uri(value.ToString(), UriKind.RelativeOrAbsolute);
+            return new Uri(value.ToString()!, UriKind.RelativeOrAbsolute);
         }
     }
 }

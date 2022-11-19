@@ -2,7 +2,6 @@
 using Extensions.Dictionary.Resolver;
 using Extensions.Dictionary.Tests;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Extensions.Dictionary.Benchmarks
 {
@@ -13,10 +12,10 @@ namespace Extensions.Dictionary.Benchmarks
     public class ConvertToInstanceBench
     {
         private readonly IDictionary<string, object?> dummy = new DictionaryDummy().ToDictionary();
-        private readonly ConverterSettings defaultResolver = new ConverterSettings { Resolver = new DefaultResolver() };
-        private readonly ConverterSettings dataContractResolver = new ConverterSettings { Resolver = new DataContractResolver() };
-        private readonly ConverterSettings dataContractResolverIgnoreAncestors = new ConverterSettings { Resolver = new DataContractResolver { InspectAncestors = false } };
-        private readonly ConverterSettings jsonResolver = new ConverterSettings { Resolver = new JsonNetSerializerResolver() };
+        private readonly ConverterSettings defaultResolver = new() { Resolver = new DefaultResolver() };
+        private readonly ConverterSettings dataContractResolver = new() { Resolver = new DataContractResolver() };
+        private readonly ConverterSettings dataContractResolverIgnoreAncestors = new() { Resolver = new DataContractResolver { InspectAncestors = false } };
+        private readonly ConverterSettings jsonResolver = new() { Resolver = new JsonNetSerializerResolver() };
 
         [Params(1, 10, 100)]
         public int N;

@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace Extensions.Dictionary.Converter
 {
     internal abstract class CollectionMemberConverter<T> : MemberConverter

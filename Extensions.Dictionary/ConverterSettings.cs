@@ -1,7 +1,5 @@
 ﻿using Extensions.Dictionary.Converter;
 using Extensions.Dictionary.Resolver;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 

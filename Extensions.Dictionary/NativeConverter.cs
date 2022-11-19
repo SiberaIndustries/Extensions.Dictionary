@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Extensions.Dictionary
+﻿namespace Extensions.Dictionary
 {
     public abstract class NativeConverter<T> : MemberConverter
     {

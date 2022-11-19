@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace Extensions.Dictionary.Converter
 {
     internal sealed class GuidConverter : NativeConverter<Guid>

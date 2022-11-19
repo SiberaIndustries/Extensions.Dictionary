@@ -1,6 +1,4 @@
 ﻿using Extensions.Dictionary.Converter;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Extensions.Dictionary.Tests.Converter

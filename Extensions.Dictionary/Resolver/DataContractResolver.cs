@@ -1,6 +1,5 @@
 ﻿using Extensions.Dictionary.Internal;
 using Microsoft.Extensions.Caching.Memory;
-using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -21,10 +20,10 @@ namespace Extensions.Dictionary.Resolver
                 throw new ArgumentNullException(nameof(memberInfo));
             }
 
-            var key = memberInfo.DeclaringType.FullName + '.' + memberInfo.Name;
-            if (MemberInfoCache.TryGetValue(key, out string value))
+            var key = memberInfo.DeclaringType?.FullName + '.' + memberInfo.Name;
+            if (MemberInfoCache.TryGetValue(key, out string? value))
             {
-                return value;
+                return value!; // TODO Remove ! when NotNullWhen is present
             }
 
             value = memberInfo.GetCustomAttribute(typeof(DataMemberAttribute), InspectAncestors) is DataMemberAttribute dataMember
@@ -41,10 +40,10 @@ namespace Extensions.Dictionary.Resolver
                 return Array.Empty<MemberInfo>();
             }
 
-            var key = type.FullName;
-            if (MemberInfoCache.TryGetValue(key, out MemberInfo[] value))
+            var key = type.FullName!;
+            if (MemberInfoCache.TryGetValue(key, out MemberInfo[]? value))
             {
-                return value;
+                return value!; // TODO Remove ! when NotNullWhen is present
             }
 
             return MemberInfoCache.Set(key, type.GetPropertiesAndFieldsFiltered(typeof(IgnoreDataMemberAttribute), InspectAncestors));

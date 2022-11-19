@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
+﻿using Xunit;
 
 namespace Extensions.Dictionary.Tests.Converter
 {
@@ -72,11 +70,11 @@ namespace Extensions.Dictionary.Tests.Converter
             }
         }
 
-        private readonly ConverterSettings settings = new ConverterSettings();
-        private readonly CustomVectorConverter customVectorConverter = new CustomVectorConverter();
-        private readonly FloatConverter floatConverter = new FloatConverter();
-        private readonly CustomVector vec1 = new CustomVector { X = 1f, Y = 2f, Z = null };
-        private readonly CustomVector vec2 = new CustomVector { X = 999f, Y = 999f, Z = null };
+        private readonly ConverterSettings settings = new();
+        private readonly CustomVectorConverter customVectorConverter = new();
+        private readonly FloatConverter floatConverter = new();
+        private readonly CustomVector vec1 = new() { X = 1f, Y = 2f, Z = null };
+        private readonly CustomVector vec2 = new() { X = 999f, Y = 999f, Z = null };
         private readonly IDictionary<string, object> expected1 = new Dictionary<string, object>
         {
             { nameof(CustomVector.X), 1f },

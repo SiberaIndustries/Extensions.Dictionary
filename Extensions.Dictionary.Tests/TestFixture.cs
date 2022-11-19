@@ -1,5 +1,4 @@
 using Extensions.Dictionary.Resolver;
-using System;
 
 namespace Extensions.Dictionary.Tests
 {
