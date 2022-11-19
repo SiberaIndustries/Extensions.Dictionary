@@ -29,7 +29,7 @@ jobs:
           NUGET_XMLDOC_MODE: skip
         shell: pwsh
         run: |
-          dotnet tool update dotnet-sonarscanner
+          dotnet tool update --global dotnet-sonarscanner
       
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
