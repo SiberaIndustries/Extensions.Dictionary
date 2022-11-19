@@ -71,9 +71,9 @@ jobs:
           $file = "Extensions.Dictionary\bin\Release\netstandard2.0\Extensions.Dictionary.dll"
           $version = (Get-Command ([System.IO.Path]::Combine($pwd.Path, $file))).Version.ToString(3)
           
-          .\.tools\dotnet-sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:sonar.host.url="https://sonarcloud.io" /v:"$version" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:sonar.host.url="https://sonarcloud.io" /v:"$version" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           dotnet test -c release --no-restore --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-          .\.tools\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Create NuGet package
         env:
