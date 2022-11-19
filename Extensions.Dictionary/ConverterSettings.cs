@@ -21,7 +21,9 @@ namespace Extensions.Dictionary
 
         public DateValueHandling DateHandling { get; set; }
 
-        public IList<MemberConverter> Converters { get; private set; } = new List<MemberConverter>
+        public GuidValueHandling GuidHandling { get; set; }
+
+        public IList<MemberConverter> Converters { get; private set; } = new List<MemberConverter>(8)
         {
             DefaultDictionaryConverter.Default,
             DefaultEnumerableConverter.Default,
