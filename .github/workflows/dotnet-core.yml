@@ -14,12 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-#      - name: Cache dotnet tools
-#        id: cache-dotnet-tools
-#        uses: actions/cache@v3
-#        with:
-#          path: $HOME/.dotnet/tools
-#          key: ${{ runner.os }}-dotnet-tools
+      - name: Cache dotnet tools
+        id: cache-dotnet-tools
+        uses: actions/cache@v3
+        with:
+          path: ~/.dotnet/tools
+          key: ${{ runner.os }}-dotnet-tools
       
       - name: Install dotnet tools
         if: steps.cache-dotnet-tools.outputs.cache-hit != 'true'
@@ -31,18 +31,20 @@ jobs:
         run: |
           dotnet tool update --global dotnet-sonarscanner
       
-#      - name: Cache SonarCloud packages
-#        uses: actions/cache@v3
-#        with:
-#          path: ~\sonar\cache
-#          key: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
       
-#      - name: Cache NuGet-Packages
-#        id: cache-nuget-packages
-#        uses: actions/cache@v3
-#        with:
-#          path: ~/.nuget/packages
-#          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+      - name: Cache NuGet-Packages
+        id: cache-nuget-packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
 #      - name: Restore Packages
 #        if: steps.cache-nuget-packages.outputs.cache-hit != 'true'
