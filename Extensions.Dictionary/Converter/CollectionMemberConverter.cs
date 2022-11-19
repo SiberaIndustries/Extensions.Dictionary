@@ -1,9 +1,7 @@
-namespace Extensions.Dictionary.Converter
+﻿namespace Extensions.Dictionary.Converter
 {
     internal abstract class CollectionMemberConverter<T> : MemberConverter
     {
-        protected readonly Type[] GenericTypes = { typeof(string), typeof(object) };
-
         public sealed override bool CanConvert(Type objectType)
         {
             return typeof(T).IsAssignableFrom(objectType);
@@ -23,8 +21,7 @@ namespace Extensions.Dictionary.Converter
 
         public sealed override object? ConvertBack(object value, Type type, ConverterSettings settings)
         {
-            GenericTypes[1] = type;
-            return ConvertBack((IDictionary<string, object?>)value, GenericTypes, settings) as object;
+            return ConvertBack((IDictionary<string, object?>)value, new[] { typeof(string), type }, settings);
         }
 
         public abstract T ConvertBack(IDictionary<string, object?> value, Type[] genericTypes, ConverterSettings settings);

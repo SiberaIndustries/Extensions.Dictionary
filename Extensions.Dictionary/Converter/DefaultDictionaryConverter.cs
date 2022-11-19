@@ -41,9 +41,7 @@ namespace Extensions.Dictionary.Converter
         {
             if (genericTypes[1] != typeof(object))
             {
-                GenericTypes[0] = genericTypes[0];
-                GenericTypes[1] = genericTypes[1];
-                var dictToCast = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(GenericTypes))!;
+                var dictToCast = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(genericTypes))!;
                 foreach (var pair in (Dictionary<string, object?>)value)
                 {
                     dictToCast.Add(pair.Key, pair.Value);
