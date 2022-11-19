@@ -12,17 +12,11 @@ jobs:
     name: Build
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '15'
-          java-package: jre
+      - uses: actions/checkout@v3
       
       - name: Cache dotnet tools
         id: cache-dotnet-tools
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .\.tools
           key: ${{ runner.os }}-dotnet-tools
@@ -36,18 +30,17 @@ jobs:
         shell: powershell
         run: |
           New-Item -Path .\.tools -ItemType Directory -Force
-          dotnet tool update dotnet-retire --tool-path .\.tools
           dotnet tool update dotnet-sonarscanner --tool-path .\.tools
       
       - name: Cache SonarCloud packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
       
 #      - name: Cache NuGet-Packages
 #        id: cache-nuget-packages
-#        uses: actions/cache@v2
+#        uses: actions/cache@v3
 #        with:
 #          path: ~/.nuget/packages
 #          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -66,11 +59,6 @@ jobs:
           DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
           NUGET_XMLDOC_MODE: skip
         run: dotnet build -c release --nologo -p:ContinuousIntegrationBuild=true
-        
-      - name: Check CVEs
-        shell: powershell
-        run: |
-          .\.tools\dotnet-retire -p Extensions.Dictionary
       
       - name: Test and analyze
         env:
