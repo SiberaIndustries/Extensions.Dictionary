@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
@@ -205,9 +205,9 @@ namespace Extensions.Dictionary.Internal
             {
                 if (targetType.IsEnum)
                 {
-                    if (initialValue is string)
+                    if (initialValue is string valueString)
                     {
-                        value = Enum.Parse(targetType, initialValue.ToString(), true);
+                        value = Enum.Parse(targetType, valueString, true);
                         return true;
                     }
                     else if (IsNummeric(initialValue))
@@ -386,7 +386,6 @@ namespace Extensions.Dictionary.Internal
             throw new InvalidCastException($"Cannot cast type {value?.GetType().Name} to {nameof(BigInteger)}");
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "HAA0601:Value type to reference type conversion causing boxing allocation", Justification = "Explicit casts required")]
         public static object FromBigInteger(BigInteger i, Type targetType)
         {
             return GetTypeCode(targetType) switch
