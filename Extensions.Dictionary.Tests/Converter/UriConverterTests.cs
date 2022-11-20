@@ -1,13 +1,12 @@
 ﻿using Extensions.Dictionary.Converter;
-using System;
 using Xunit;
 
 namespace Extensions.Dictionary.Tests.Converter
 {
     public class UriConverterTests
     {
-        private readonly ConverterSettings settings = new ConverterSettings();
-        private readonly UriConverter converter = new UriConverter();
+        private readonly ConverterSettings settings = new();
+        private readonly UriConverter converter = new();
 
         [Theory]
         [InlineData("../some/uri", UriKind.Relative)]

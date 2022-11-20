@@ -1,15 +1,14 @@
 ﻿using Extensions.Dictionary.Converter;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Extensions.Dictionary.Tests.Converter
 {
     public class DateTimeOffsetConverterTests
     {
-        private readonly ConverterSettings settings = new ConverterSettings();
-        private readonly DateTimeOffsetConverter converter = new DateTimeOffsetConverter();
+        private readonly ConverterSettings settings = new();
+        private readonly DateTimeOffsetConverter converter = new();
         private readonly IDictionary<string, object> expectedMinimum = new Dictionary<string, object>
         {
             { nameof(DateTimeOffset.Ticks), 630823790450060000L },

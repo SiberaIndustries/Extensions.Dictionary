@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Extensions.Dictionary.Internal
 {
@@ -21,7 +20,7 @@ namespace Extensions.Dictionary.Internal
                 case null:
                     throw new ArgumentNullException(nameof(memberInfo));
                 default:
-                    throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field");
+                    throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType?.Name}.{memberInfo.Name} is not a property or field");
             }
         }
 
@@ -32,7 +31,7 @@ namespace Extensions.Dictionary.Internal
                 PropertyInfo propertyInfo => propertyInfo.PropertyType,
                 FieldInfo fieldInfo => fieldInfo.FieldType,
                 null => throw new ArgumentNullException(nameof(memberInfo)),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
+                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType?.Name}.{memberInfo.Name} is not a property or field")
             };
         }
 

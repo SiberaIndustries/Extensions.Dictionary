@@ -1,47 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="Common">
-    <ProjectGuid>{083b42dc-dd37-4d4a-aaf4-c6740685c603}</ProjectGuid>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>2.2.6</Version>
-    <AssemblyVersion>2.2.6.0</AssemblyVersion>
+	<ProjectGuid>{083b42dc-dd37-4d4a-aaf4-c6740685c603}</ProjectGuid>
+	<LangVersion>latest</LangVersion>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<Version>2.2.6</Version>
+	<AssemblyVersion>2.2.6.0</AssemblyVersion>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
-    <PackageId>Extensions.Dictionary</PackageId>
-    <Authors>Tobias Sibera</Authors>
-    <Company>Sibera Industries</Company>
-    <Description>A library to convert a dictionary out of a given object or an object out of a dictionary.</Description>
-    <PackageIcon>icon.png</PackageIcon>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/SiberaIndustries/Extensions.Dictionary</RepositoryUrl>
-    <PackageReleaseNotes>https://github.com/SiberaIndustries/Extensions.Dictionary/releases</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/SiberaIndustries/Extensions.Dictionary</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>Dictionary;Extensions;Converter</PackageTags>
+	<PackageId>Extensions.Dictionary</PackageId>
+	<Authors>Tobias Sibera</Authors>
+	<Company>Sibera Industries</Company>
+	<Description>A library to convert a dictionary out of a given object or an object out of a dictionary.</Description>
+	<PackageIcon>icon.png</PackageIcon>
+	<RepositoryType>git</RepositoryType>
+	<RepositoryUrl>https://github.com/SiberaIndustries/Extensions.Dictionary</RepositoryUrl>
+	<PackageReleaseNotes>https://github.com/SiberaIndustries/Extensions.Dictionary/releases</PackageReleaseNotes>
+	<PackageProjectUrl>https://github.com/SiberaIndustries/Extensions.Dictionary</PackageProjectUrl>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageTags>Dictionary;Extensions;Converter</PackageTags>
 
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup Label="Code Analysis">
-    <Features>IOperation</Features>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisRuleSet>..\code-analysis.ruleset</CodeAnalysisRuleSet>
+	<Features>IOperation</Features>
+	<EnableNETAnalyzers>true</EnableNETAnalyzers>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<CodeAnalysisRuleSet>..\code-analysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.*" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+	<ItemGroup>
+	<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.*" />
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.*" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\icon.png" Link="icon.png" Visible="false" Pack="true" PackagePath="" />
+	<None Include="..\icon.png" Link="icon.png" Visible="false" Pack="true" PackagePath="" />
+	<None Include="..\README.md" Visible="false" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

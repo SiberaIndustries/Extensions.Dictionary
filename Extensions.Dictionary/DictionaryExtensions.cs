@@ -1,8 +1,6 @@
 ﻿using Extensions.Dictionary.Converter;
 using Extensions.Dictionary.Internal;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Extensions.Dictionary
@@ -28,7 +26,7 @@ namespace Extensions.Dictionary
                 return converter.ConvertBack(dictionary, type, settings) ?? throw new InvalidOperationException($"Cannot convert {dictionary.GetType().Name} to {type.Name}");
             }
 
-            var instance = Activator.CreateInstance(type);
+            var instance = Activator.CreateInstance(type)!;
             var resolver = settings.ResolverInternal;
             var members = resolver.GetMemberInfos(type);
 

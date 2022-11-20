@@ -14,7 +14,7 @@ namespace Extensions.Dictionary.Benchmarks
         [Params(1000)]
         public int N;
 
-        private readonly DictionaryDummy dummy = new DictionaryDummy();
+        private readonly DictionaryDummy dummy = new();
         private readonly MemberInfo memberInfo = typeof(DictionaryDummy).GetProperty(nameof(DictionaryDummy.String01))!;
 
         [Benchmark(Baseline = true)]

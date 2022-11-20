@@ -1,7 +1,5 @@
 ﻿using Extensions.Dictionary.Internal;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Extensions.Dictionary.Converter
 {
@@ -21,15 +19,15 @@ namespace Extensions.Dictionary.Converter
             {
                 foreach (var key in value.Keys)
                 {
-                    dictionary[key.ToString()] = value[key];
+                    dictionary[key.ToString()!] = value[key]!;
                 }
             }
             else
             {
                 foreach (var key in value.Keys)
                 {
-                    var keyString = key.ToString();
-                    var keyValue = value[key];
+                    var keyString = key.ToString()!;
+                    var keyValue = value[key]!;
                     dictionary[keyString] = keyValue.GetType().IsSimpleType()
                         ? keyValue
                         : Convert(dictionary, settings);
@@ -43,9 +41,7 @@ namespace Extensions.Dictionary.Converter
         {
             if (genericTypes[1] != typeof(object))
             {
-                GenericTypes[0] = genericTypes[0];
-                GenericTypes[1] = genericTypes[1];
-                var dictToCast = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(GenericTypes));
+                var dictToCast = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(genericTypes))!;
                 foreach (var pair in (Dictionary<string, object?>)value)
                 {
                     dictToCast.Add(pair.Key, pair.Value);

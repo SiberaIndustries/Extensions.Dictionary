@@ -1,5 +1,4 @@
 ﻿using Extensions.Dictionary.Internal;
-using System;
 using System.Numerics;
 using Xunit;
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using System;
 using System.Reflection;
 
 namespace Extensions.Dictionary.Resolver
@@ -25,7 +24,7 @@ namespace Extensions.Dictionary.Resolver
             {
                 PropertyInfo propertyInfo => propertyInfo.GetValue(instance),
                 FieldInfo fieldInfo => fieldInfo.GetValue(instance),
-                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType.Name}.{memberInfo.Name} is not a property or field")
+                _ => throw new NotSupportedException($"{nameof(memberInfo.MemberType)} {memberInfo.DeclaringType?.Name}.{memberInfo.Name} is not a property or field")
             };
         }
 

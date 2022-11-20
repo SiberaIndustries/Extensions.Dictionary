@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Extensions.Dictionary.Converter
+﻿namespace Extensions.Dictionary.Converter
 {
     internal sealed class VersionConverter : MemberConverter<Version>
     {
