@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  NUGET_XMLDOC_MODE: skip
+
 jobs:
   
   build:
@@ -13,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       
       - name: Cache dotnet tools
         id: cache-dotnet-tools
@@ -23,10 +31,6 @@ jobs:
       
       - name: Install dotnet tools
         if: steps.cache-dotnet-tools.outputs.cache-hit != 'true'
-        env:
-          DOTNET_CLI_TELEMETRY_OPTOUT: 1
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-          NUGET_XMLDOC_MODE: skip
         shell: pwsh
         run: |
           dotnet tool update --global dotnet-sonarscanner
@@ -48,24 +52,13 @@ jobs:
 
 #      - name: Restore Packages
 #        if: steps.cache-nuget-packages.outputs.cache-hit != 'true'
-#        env:
-#          DOTNET_CLI_TELEMETRY_OPTOUT: 1
-#          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-#          NUGET_XMLDOC_MODE: skip
 #        run: dotnet restore
         
       - name: Build
-        env:
-          DOTNET_CLI_TELEMETRY_OPTOUT: 1
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-          NUGET_XMLDOC_MODE: skip
-        run: dotnet build -c release --nologo -p:ContinuousIntegrationBuild=true
+        run: dotnet build -c release -p:ContinuousIntegrationBuild=true
       
       - name: Test and analyze
         env:
-          DOTNET_CLI_TELEMETRY_OPTOUT: 1
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-          NUGET_XMLDOC_MODE: skip
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: pwsh
@@ -74,18 +67,14 @@ jobs:
           $version = (Get-Command ([System.IO.Path]::Combine($pwd.Path, $file))).Version.ToString(3)
           
           dotnet sonarscanner begin /k:"SiberaIndustries_Extensions.Dictionary" /o:"siberaindustries" /d:sonar.host.url="https://sonarcloud.io" /v:"$version" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-          dotnet test -c release --no-restore --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          dotnet test -c release --no-restore --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Create NuGet package
-        env:
-          DOTNET_CLI_TELEMETRY_OPTOUT: 1
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-          NUGET_XMLDOC_MODE: skip
-        run: dotnet pack -o . -c release --no-restore --no-build --nologo
+        run: dotnet pack -o . -c release --no-restore --no-build
 
       - name: Upload NuGet-Package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: NuGet-Packages
           path: ./*.nupkg
