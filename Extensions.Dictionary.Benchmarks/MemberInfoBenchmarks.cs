@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 using Extensions.Dictionary.Tests;
 using System.Reflection;
 
@@ -8,7 +9,7 @@ namespace Extensions.Dictionary.Benchmarks
     [MemoryDiagnoser]
     [RankColumn]
     [BenchmarkCategory(nameof(MemberInfoExtensions))]
-    [DisassemblyDiagnoser(1, true, false, true, false, false, true)]
+    [DisassemblyDiagnoser(1, DisassemblySyntax.Masm, true, false, true, false, false, true)]
     public class MemberInfoTypeCastBench
     {
         [Params(1000)]
