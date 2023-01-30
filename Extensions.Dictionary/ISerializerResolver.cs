@@ -12,7 +12,7 @@ namespace Extensions.Dictionary
         /// </summary>
         /// <param name="memberInfo">MemberInfo object.</param>
         /// <returns>The name of the propety.</returns>
-        public string GetMemberName(MemberInfo memberInfo);
+        string GetMemberName(MemberInfo memberInfo);
 
         /// <summary>
         /// Returns the value of the property.
@@ -20,13 +20,13 @@ namespace Extensions.Dictionary
         /// <param name="memberInfo">MemberInfo object.</param>
         /// <param name="instance">The instance of the object.</param>
         /// <returns>The value of the propety.</returns>
-        public object? GetMemberValue(MemberInfo memberInfo, object? instance);
+        object? GetMemberValue(MemberInfo memberInfo, object? instance);
 
         /// <summary>
         /// Returns the necessary MemberInfo objects.
         /// </summary>
         /// <param name="type">The object type.</param>
         /// <returns>The necessary MemberInfo objects.</returns>
-        public MemberInfo[] GetMemberInfos(Type? type);
+        MemberInfo[] GetMemberInfos(Type? type);
     }
 }
