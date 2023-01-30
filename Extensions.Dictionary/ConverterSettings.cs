@@ -35,7 +35,7 @@ namespace Extensions.Dictionary
             UriConverter.Default,
         };
 
-        internal bool TryGetMatchingConverter(Type objectType, [NotNullWhen(returnValue: true)]out MemberConverter? converter)
+        internal bool TryGetMatchingConverter(Type objectType, [NotNullWhen(returnValue: true)] out MemberConverter? converter)
         {
             for (int i = 0; i < Converters.Count; i++)
             {
