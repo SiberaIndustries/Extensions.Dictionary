@@ -40,7 +40,7 @@ namespace Extensions.Dictionary.Tests
 
         public MemberInfo[] GetMemberInfos(Type type) =>
             type?
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public).Cast<MemberInfo>()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => !(x.Name == "Item" && x.GetIndexParameters().Length == 1)).ToArray().Cast<MemberInfo>()
                 .Concat(type.GetFields(BindingFlags.Instance | BindingFlags.Public))
                 .Where(x => !x.GetCustomAttributes<JsonIgnoreAttribute>().Any()).ToArray() ?? Array.Empty<Type>();
     }

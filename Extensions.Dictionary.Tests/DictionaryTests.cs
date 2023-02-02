@@ -20,7 +20,8 @@ namespace Extensions.Dictionary.Tests
                 String05 = "E",
                 String06 = "F",
                 String08 = "H",
-                Vec3 = new Vector3(3, 2, 1)
+                Vec3 = new Vector3(3, 2, 1),
+                Item = 42
             };
 
             ((IList<int>)dummy.Col1).Add(3);
@@ -51,6 +52,7 @@ namespace Extensions.Dictionary.Tests
                 { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
                 { nameof(DictionaryDummy.Col2), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", "3" }, { "3", true } } },
                 { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
+                { nameof(DictionaryDummy.Item), 42f },
             };
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());
@@ -123,6 +125,7 @@ namespace Extensions.Dictionary.Tests
                 { nameof(DictionaryDummy.Col1), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", 3 } } },
                 { nameof(DictionaryDummy.Col2), new Dictionary<string, object> { { "0", 1 }, { "1", 2 }, { "2", "3" }, { "3", true } } },
                 { nameof(DictionaryDummy.Vec3), new Dictionary<string, object> { { "X", 3f }, { "Y", 2f }, { "Z", 1f } } },
+                { nameof(DictionaryDummy.Item), 42f },
             };
 
             Assert.Equal(dictionary, expected, new DictionaryComparer<string, object>());

@@ -4,13 +4,9 @@ namespace Extensions.Dictionary.Internal
 {
     internal static class TypeExtensions
     {
-        private const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
-
         public static MemberInfo[] GetPropertiesAndFields(this Type type)
         {
-            var props = type.GetProperties(PublicInstanceFlags) as MemberInfo[];
-            var fields = type.GetFields(PublicInstanceFlags) as MemberInfo[];
-
+            var (props, fields) = type.GetPropertiesAndFieldsInternal();
             if (fields.Length > 0)
             {
                 var oldLength = props.Length;
@@ -23,9 +19,7 @@ namespace Extensions.Dictionary.Internal
 
         public static MemberInfo[] GetPropertiesAndFieldsFiltered(this Type type, Type attributeType, bool inspectAncestors = false)
         {
-            var props = type.GetProperties(PublicInstanceFlags) as MemberInfo[];
-            var fields = type.GetFields(PublicInstanceFlags) as MemberInfo[];
-
+            var (props, fields) = type.GetPropertiesAndFieldsInternal();
             var max = props.Length > fields.Length ? props.Length : fields.Length;
             var list = new List<MemberInfo>(props.Length + fields.Length);
             for (int i = 0; i < max; i++)
@@ -42,6 +36,14 @@ namespace Extensions.Dictionary.Internal
             }
 
             return list.ToArray();
+        }
+
+        internal static (MemberInfo[] props, MemberInfo[] fields) GetPropertiesAndFieldsInternal(this Type type)
+        {
+            const BindingFlags PublicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
+            var props = type.GetProperties(PublicInstanceFlags).Where(x => !(x.Name == "Item" && x.GetIndexParameters().Length == 1)).ToArray();
+            var fields = type.GetFields(PublicInstanceFlags);
+            return (props, fields);
         }
     }
 }

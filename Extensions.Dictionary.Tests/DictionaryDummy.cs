@@ -48,6 +48,9 @@ namespace Extensions.Dictionary.Tests
 
         public Vector3 Vec3 { get; set; } = new Vector3(1f, 2f, 3f);
 
+        public float Item { get; set; } = 42;
+        //public float this[bool index] => 42;
+
         public override int GetHashCode()
         {
             throw new NotImplementedException();
