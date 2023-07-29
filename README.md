@@ -63,28 +63,30 @@ var person2 = dictionary.ToInstance<Person>(settings);
 
 ### Custom MemberConverter
 
-This sample creates a custom converter from `MemberConverter<T>` that overrides conversion for the `System.Numerics.Vector3` class.
+This sample creates a custom converter from `MemberConverter<T>` that overrides conversion for the `System.Numerics.Vector4` class.
 
 ```cs
-public class Vector3Converter : MemberConverter<Vector3>
+public class Vector4Converter : MemberConverter<Vector4>
 {
-    public override IDictionary<string, object> ToDictionary(Vector3 value, ConverterSettings settings)
+    public override IDictionary<string, object> ToDictionary(Vector4 value, ConverterSettings settings)
     {
-        return new Dictionary<string, object>(3)
+        return new Dictionary<string, object>(4)
         {
-            { nameof(Vector3.X), value.X },
-            { nameof(Vector3.Y), value.Y },
-            { nameof(Vector3.Z), value.Z },
+            { nameof(Vector4.W), value.W },
+            { nameof(Vector4.X), value.X },
+            { nameof(Vector4.Y), value.Y },
+            { nameof(Vector4.Z), value.Z },
         };
     }
 
-    public override Vector3 ToInstance(IDictionary<string, object?> value, ConverterSettings settings)
+    public override Vector4 ToInstance(IDictionary<string, object?> value, ConverterSettings settings)
     {
-        return new Vector3
+        return new Vector4
         {
-            X = float.Parse(value[nameof(Vector3.X)]?.ToString(), settings.Culture),
-            Y = float.Parse(value[nameof(Vector3.Y)]?.ToString(), settings.Culture),
-            Z = float.Parse(value[nameof(Vector3.Z)]?.ToString(), settings.Culture),
+            W = float.Parse(value[nameof(Vector4.W)]?.ToString(), settings.Culture),
+            X = float.Parse(value[nameof(Vector4.X)]?.ToString(), settings.Culture),
+            Y = float.Parse(value[nameof(Vector4.Y)]?.ToString(), settings.Culture),
+            Z = float.Parse(value[nameof(Vector4.Z)]?.ToString(), settings.Culture),
         };
     }
 }
@@ -95,7 +97,7 @@ public class Vector3Converter : MemberConverter<Vector3>
 var plane = new Plane(1f, 1f, 1f, .1f);
 
 var settings = new ConverterSettings();
-settings.Converters.Add(new Vector3Converter());
+settings.Converters.Add(new Vector4Converter());
 
 var dict = plane.ToDictionary(settings);
 ```
